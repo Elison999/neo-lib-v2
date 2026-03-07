@@ -1,0 +1,141 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Elison999/Neon-Lira-V2-lib/7f9ca6d43d2588da20ca7f317667a2a46654ffe6/Library.Lua"))()
+
+    local Window = Library.new({
+        -- Key System
+        KeySystem       = true,
+        KeyName         = "LOH HUB | Key System",
+        Key             = "LOH_HUB.GG",
+        AutoSaveKey     = true,
+        AutoLoadKey     = true,
+        GetKeybyWebsite = true,
+        WebSite         = "https://pastebin.com/SeuLink",
+        -- Loading
+        DecalId         = "7148140395",
+        LoadingName     = "Welcome Back!!",
+        -- UI
+        Title           = "LOH HUB",
+        SubTitle        = "LOH_HUB.GG",
+        Theme           = "Neon Void",
+    })
+
+    -- Adiciona tabs
+    local MainTab = Window:AddTab("Main", "🏠")
+    local AimbotTab = Window:AddTab("Aimbot", "🎯")
+    local VisualTab = Window:AddTab("Visuals", "👁")
+    local MiscTab = Window:AddTab("Misc", "⚙")
+    local ConfigTab = Window:AddConfig()
+
+    -- Seção
+    MainTab:AddSection({ Name = "Player" })
+
+    -- Toggle
+    MainTab:AddToggle({
+        Name = "God Mode",
+        Default = false,
+        Callback = function(val)
+            print("GodMode:", val)
+        end
+    })
+
+    -- Slider
+    MainTab:AddSlider({
+        Name = "WalkSpeed",
+        Min = 16, Max = 250, Default = 16,
+        Suffix = " sp",
+        Callback = function(val)
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
+        end
+    })
+
+    -- Dropdown
+    MainTab:AddDropdown({
+        Name = "Team",
+        Options = {"Innocents", "Sheriffs", "Murderer"},
+        Default = "Innocents",
+        Callback = function(val)
+            print("Team:", val)
+        end
+    })
+
+    -- Color Picker
+    MainTab:AddColorPicker({
+        Name = "ESP Color",
+        Default = Color3.fromRGB(255, 50, 50),
+        Callback = function(col)
+            print("Color:", col)
+        end
+    })
+
+    -- Keybind
+    MainTab:AddKeybind({
+        Name = "Toggle Menu",
+        Default = Enum.KeyCode.RightShift,
+        OnPress = function()
+            Window:Toggle()
+        end,
+        Callback = function(key)
+            print("Key set:", key)
+        end
+    })
+
+    -- MultiToggle
+    MainTab:AddMultiToggle({
+        Name = "ESP Options",
+        Options = {"Names", "Health", "Distance", "Boxes"},
+        Default = {"Names"},
+        Callback = function(selected)
+            print("Selected:", table.concat(selected, ", "))
+        end
+    })
+
+    -- Button
+    MainTab:AddButton({
+        Name = "🚀  Executar Script",
+        Callback = function()
+            Window:Notify({
+                Title = "Executado!",
+                Description = "Script rodando com sucesso.",
+                Duration = 3,
+                Icon = "✅"
+            })
+        end
+    })
+
+    -- Textbox
+    MainTab:AddTextbox({
+        Name = "Player Alvo",
+        Placeholder = "Nome do player...",
+        Default = "",
+        Callback = function(text)
+            print("Alvo:", text)
+        end
+    })
+
+    -- Label
+    local lbl = MainTab:AddLabel({ Name = "Status: Inativo" })
+    task.delay(2, function()
+        lbl:Set("<font color='#22c55e'>Status: Ativo ✓</font>")
+    end)
+
+    -- Paragraph
+    MainTab:AddParagraph({
+        Content = "Bem-vindo ao LOH HUB! Use as abas para navegar pelas funcionalidades. Pressione RightShift para abrir/fechar a UI."
+    })
+
+    -- Input numérico
+    MainTab:AddInput({
+        Name = "Jump Power",
+        Default = 50,
+        Placeholder = "Digite o valor...",
+        Callback = function(val)
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = val
+        end
+    })
+
+    -- Notificação inicial
+    Window:Notify({
+        Title = "LOH HUB Carregado!",
+        Description = "Bem-vindo, " .. game.Players.LocalPlayer.Name,
+        Duration = 5,
+        Icon = "🎉"
+    })
