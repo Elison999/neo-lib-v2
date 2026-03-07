@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Elison999/Neon-Lira-V2-lib/7f9ca6d43d2588da20ca7f317667a2a46654ffe6/Library.Lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Elison999/neo-lib-v2/refs/heads/main/Neon%20Lib%20V2.Lua"))()
 
     local Window = Library.new({
         -- Key System
