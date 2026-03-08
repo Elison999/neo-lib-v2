@@ -432,9 +432,22 @@ function NeonLib:CreateWindow(config)
     MainFrame.Position         = UDim2.new(0.5, 0, 0.5, 0)
     MainFrame.BackgroundColor3 = currentTheme.Bg
     MainFrame.BackgroundTransparency = 0
-    MainFrame.ClipsDescendants = true
+    -- NÃO usar ClipsDescendants aqui: ele corta os cantos arredondados do UICorner
+    MainFrame.ClipsDescendants = false
     MainFrame.Parent           = ScreenGui
     Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 14)
+
+    -- Frame interno que faz o clip real sem quebrar os cantos do MainFrame
+    local ClipFrame = Instance.new("Frame")
+    ClipFrame.Name              = "ClipFrame"
+    ClipFrame.Size              = UDim2.new(1, 0, 1, 0)
+    ClipFrame.BackgroundTransparency = 1
+    ClipFrame.ClipsDescendants  = true
+    ClipFrame.ZIndex            = 1
+    ClipFrame.Parent            = MainFrame
+    -- UICorner no ClipFrame com o mesmo raio garante que o clip também seja redondo
+    Instance.new("UICorner", ClipFrame).CornerRadius = UDim.new(0, 14)
+
 
     local MainStroke = Instance.new("UIStroke", MainFrame)
     MainStroke.Color     = currentTheme.Accent
@@ -476,7 +489,7 @@ function NeonLib:CreateWindow(config)
     TitleBar.Size              = UDim2.new(1, 0, 0, 44)
     TitleBar.BackgroundColor3  = currentTheme.Tab
     TitleBar.BackgroundTransparency = 0
-    TitleBar.Parent            = MainFrame
+    TitleBar.Parent            = ClipFrame
     Instance.new("UICorner", TitleBar).CornerRadius = UDim.new(0, 14)
 
     -- Fix bottom corners of title bar
@@ -611,7 +624,7 @@ function NeonLib:CreateWindow(config)
     SideBar.Position          = UDim2.new(0, 0, 0, 44)
     SideBar.BackgroundColor3  = currentTheme.Tab
     SideBar.BackgroundTransparency = 0
-    SideBar.Parent            = MainFrame
+    SideBar.Parent            = ClipFrame
 
     onTheme(function(t) SideBar.BackgroundColor3 = t.Tab end)
 
@@ -671,7 +684,7 @@ function NeonLib:CreateWindow(config)
     ContentArea.BackgroundColor3 = currentTheme.Bg
     ContentArea.BackgroundTransparency = 0
     ContentArea.ClipsDescendants = true
-    ContentArea.Parent         = MainFrame
+    ContentArea.Parent         = ClipFrame
 
     onTheme(function(t) ContentArea.BackgroundColor3 = t.Bg end)
 
@@ -681,7 +694,7 @@ function NeonLib:CreateWindow(config)
     Divider.Position          = UDim2.new(0, 150, 0, 44)
     Divider.BackgroundColor3  = currentTheme.Accent
     Divider.BackgroundTransparency = 0.7
-    Divider.Parent            = MainFrame
+    Divider.Parent            = ClipFrame
 
     onTheme(function(t) Divider.BackgroundColor3 = t.Accent end)
 
@@ -1211,22 +1224,29 @@ function NeonLib:CreateWindow(config)
                 SelBtn:FindFirstChildOfClass("UIStroke").Color = t.Accent
             end)
 
-            -- Dropdown panel
+            -- ─────────────────────────────────────────────────────────
+            -- Dropdown panel: filho do ScreenGui para nunca ser cortado
+            -- por ClipsDescendants de nenhum frame intermediário.
+            -- A posição é calculada via AbsolutePosition do SelBtn.
+            -- ─────────────────────────────────────────────────────────
+            local panelH = math.min(#options, 5) * 30 + 8
+
             local Panel = Instance.new("Frame")
             Panel.Name             = "DropPanel"
-            Panel.Size             = UDim2.new(0, 140, 0, math.min(#options, 5) * 30 + 8)
-            Panel.AnchorPoint      = Vector2.new(1, 0)
-            Panel.Position         = UDim2.new(1, -12, 1, 4)
+            Panel.Size             = UDim2.new(0, 140, 0, panelH)
+            Panel.AnchorPoint      = Vector2.new(0, 0)
+            Panel.Position         = UDim2.new(0, 0, 0, 0)   -- será atualizado ao abrir
             Panel.BackgroundColor3 = currentTheme.Tab
-            Panel.ZIndex           = 10
+            Panel.ZIndex           = 500   -- sempre acima de tudo
             Panel.Visible          = false
             Panel.ClipsDescendants = true
-            Panel.Parent           = F
+            Panel.Parent           = ScreenGui  -- <-- ScreenGui, não F
             Instance.new("UICorner", Panel).CornerRadius = UDim.new(0, 10)
-            Instance.new("UIStroke", Panel).Color = currentTheme.Accent
+            local PanStroke = Instance.new("UIStroke", Panel)
+            PanStroke.Color = currentTheme.Accent
             onTheme(function(t)
                 Panel.BackgroundColor3 = t.Tab
-                Panel:FindFirstChildOfClass("UIStroke").Color = t.Accent
+                PanStroke.Color        = t.Accent
             end)
 
             local PanelScroll = Instance.new("ScrollingFrame")
@@ -1235,7 +1255,7 @@ function NeonLib:CreateWindow(config)
             PanelScroll.ScrollBarThickness = 2
             PanelScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
             PanelScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-            PanelScroll.ZIndex     = 11
+            PanelScroll.ZIndex     = 501
             PanelScroll.Parent     = Panel
 
             local PanList = Instance.new("UIListLayout")
@@ -1248,7 +1268,14 @@ function NeonLib:CreateWindow(config)
             PanPad.PaddingRight  = UDim.new(0, 4)
             PanPad.PaddingBottom = UDim.new(0, 4)
 
-            local DropObj  = { Value = selected }
+            local DropObj = { Value = selected }
+
+            -- Fecha este dropdown (usado também ao abrir outro)
+            local function closePanel()
+                open = false
+                Tween(Panel, {Size = UDim2.new(0, 140, 0, 0)}, 0.18):Play()
+                task.delay(0.19, function() Panel.Visible = false end)
+            end
 
             local function selectOption(opt, silent)
                 selected = opt
@@ -1256,62 +1283,87 @@ function NeonLib:CreateWindow(config)
                 if flag then WindowObj.Flags = WindowObj.Flags or {}; WindowObj.Flags[flag] = opt end
                 SelBtn.Text = opt .. "  ▾"
                 if not silent then pcall(callback, opt) end
-                Tween(Panel, {Size = UDim2.new(0,140,0,0)}, 0.2):Play()
-                task.delay(0.21, function() Panel.Visible = false end)
-                open = false
+                closePanel()
             end
 
-            for i, opt in ipairs(options) do
-                local OBtn = Instance.new("TextButton")
-                OBtn.Size            = UDim2.new(1, 0, 0, 28)
-                OBtn.BackgroundColor3 = currentTheme.Element
-                OBtn.BackgroundTransparency = opt == selected and 0 or 0.5
-                OBtn.Text            = opt
-                OBtn.TextColor3      = currentTheme.Text
-                OBtn.TextSize        = 13
-                OBtn.Font            = Enum.Font.Gotham
-                OBtn.LayoutOrder     = i
-                OBtn.ZIndex          = 12
-                OBtn.Parent          = PanelScroll
-                Instance.new("UICorner", OBtn).CornerRadius = UDim.new(0, 6)
-                onTheme(function(t)
-                    OBtn.BackgroundColor3 = t.Element
-                    OBtn.TextColor3       = t.Text
-                end)
-                OBtn.MouseButton1Click:Connect(function() selectOption(opt) end)
-            end
-
-            SelBtn.MouseButton1Click:Connect(function()
-                open = not open
-                if open then
-                    Panel.Visible = true
-                    Panel.Size    = UDim2.new(0, 140, 0, 0)
-                    Tween(Panel, {Size = UDim2.new(0, 140, 0, math.min(#options, 5) * 30 + 8)}, 0.25, Enum.EasingStyle.Back):Play()
-                else
-                    Tween(Panel, {Size = UDim2.new(0, 140, 0, 0)}, 0.2):Play()
-                    task.delay(0.21, function() Panel.Visible = false end)
-                end
-            end)
-
-            function DropObj:Set(v, silent) selectOption(v, silent) end
-            function DropObj:Refresh(newOpts)
+            local function buildOptions(opts)
+                -- Limpa botões antigos
                 for _, c in ipairs(PanelScroll:GetChildren()) do
                     if c:IsA("TextButton") then c:Destroy() end
                 end
-                for i, opt in ipairs(newOpts) do
+                for i, opt in ipairs(opts) do
                     local OBtn = Instance.new("TextButton")
                     OBtn.Size            = UDim2.new(1, 0, 0, 28)
                     OBtn.BackgroundColor3 = currentTheme.Element
+                    OBtn.BackgroundTransparency = opt == selected and 0 or 0.5
                     OBtn.Text            = opt
                     OBtn.TextColor3      = currentTheme.Text
                     OBtn.TextSize        = 13
                     OBtn.Font            = Enum.Font.Gotham
                     OBtn.LayoutOrder     = i
-                    OBtn.ZIndex          = 12
+                    OBtn.ZIndex          = 502
                     OBtn.Parent          = PanelScroll
                     Instance.new("UICorner", OBtn).CornerRadius = UDim.new(0, 6)
+                    onTheme(function(t)
+                        OBtn.BackgroundColor3 = t.Element
+                        OBtn.TextColor3       = t.Text
+                    end)
                     OBtn.MouseButton1Click:Connect(function() selectOption(opt) end)
                 end
+            end
+
+            buildOptions(options)
+
+            -- Fecha se clicar fora
+            UserInputService.InputBegan:Connect(function(inp)
+                if open and (inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch) then
+                    -- pequeno delay para não conflitar com o próprio SelBtn.Click
+                    task.defer(function()
+                        if open then
+                            local mp = UserInputService:GetMouseLocation()
+                            local pa = Panel.AbsolutePosition
+                            local ps = Panel.AbsoluteSize
+                            local inside = mp.X >= pa.X and mp.X <= pa.X + ps.X
+                                       and mp.Y >= pa.Y and mp.Y <= pa.Y + ps.Y
+                            if not inside then closePanel() end
+                        end
+                    end)
+                end
+            end)
+
+            SelBtn.MouseButton1Click:Connect(function()
+                if open then
+                    closePanel()
+                    return
+                end
+                open = true
+
+                -- Calcula posição absoluta do SelBtn no ScreenGui
+                local abs  = SelBtn.AbsolutePosition
+                local size = SelBtn.AbsoluteSize
+                local newH = math.min(#options, 5) * 30 + 8
+
+                -- Posiciona abaixo do botão, alinhado à direita
+                local panX = abs.X + size.X - 140
+                local panY = abs.Y + size.Y + 4
+
+                -- Se ultrapassar a tela embaixo, abre para cima
+                local screenH = ScreenGui.AbsoluteSize.Y
+                if panY + newH > screenH then
+                    panY = abs.Y - newH - 4
+                end
+
+                Panel.Size     = UDim2.new(0, 140, 0, 0)
+                Panel.Position = UDim2.new(0, panX, 0, panY)
+                Panel.Visible  = true
+                Tween(Panel, {Size = UDim2.new(0, 140, 0, newH)}, 0.22, Enum.EasingStyle.Back):Play()
+            end)
+
+            function DropObj:Set(v, silent) selectOption(v, silent) end
+            function DropObj:Refresh(newOpts)
+                options = newOpts
+                buildOptions(newOpts)
+            end
             end
 
             return DropObj
