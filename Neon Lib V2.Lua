@@ -1327,22 +1327,20 @@ function NeonLib:CreateWindow(config)
 
             buildOptions(options)
 
-            -- Fecha se clicar fora
-            UserInputService.InputBegan:Connect(function(inp)
-                if open and (inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch) then
-                    -- pequeno delay para não conflitar com o próprio SelBtn.Click
-                    task.defer(function()
-                        if open then
-                            local mp = UserInputService:GetMouseLocation()
-                            local pa = Panel.AbsolutePosition
-                            local ps = Panel.AbsoluteSize
-                            local inside = mp.X >= pa.X and mp.X <= pa.X + ps.X
-                                       and mp.Y >= pa.Y and mp.Y <= pa.Y + ps.Y
-                            if not inside then closePanel() end
-                        end
-                    end)
-                end
-            end)
+            -- Botao X para fechar o dropdown
+            local CloseBtn = Instance.new("TextButton")
+            CloseBtn.Size              = UDim2.new(0, 18, 0, 18)
+            CloseBtn.AnchorPoint       = Vector2.new(1, 0.5)
+            CloseBtn.Position          = UDim2.new(1, -3, 0, 12)
+            CloseBtn.BackgroundColor3  = Color3.fromRGB(255, 70, 70)
+            CloseBtn.Text              = "✕"
+            CloseBtn.TextColor3        = Color3.fromRGB(255, 255, 255)
+            CloseBtn.TextSize          = 9
+            CloseBtn.Font              = Enum.Font.GothamBold
+            CloseBtn.ZIndex            = 5
+            CloseBtn.Parent            = Panel
+            Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1, 0)
+            CloseBtn.MouseButton1Click:Connect(closePanel)
 
             SelBtn.MouseButton1Click:Connect(function()
                 if open then
@@ -1396,7 +1394,7 @@ function NeonLib:CreateWindow(config)
         end
 
         -- ──────────────────────────────
-        --  COLOR PICKER (simplificado)
+        --  COLOR PICKER
         -- ──────────────────────────────
         function TabObj:AddColorPicker(cfg)
             cfg = cfg or {}
@@ -1405,7 +1403,7 @@ function NeonLib:CreateWindow(config)
             local callback = cfg.Callback or function() end
             local flag     = cfg.Flag
 
-            local F = makeBase(44, name)
+            local F = makeBase(29, name)
             table.insert(allElements, {name=name, tabName=tabName, frame=F})
 
             local Lbl = Instance.new("TextLabel")
@@ -1414,114 +1412,229 @@ function NeonLib:CreateWindow(config)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize = 9
+            Lbl.TextSize           = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
             onTheme(function(t) Lbl.TextColor3 = t.Text end)
 
+            -- Preview swatch (igual ao SelBtn do dropdown)
             local Preview = Instance.new("TextButton")
-            Preview.Size           = UDim2.new(0, 32, 0, 19)
+            Preview.Size           = UDim2.new(0, 62, 0, 19)
             Preview.AnchorPoint    = Vector2.new(1, 0.5)
-            Preview.Position       = UDim2.new(1, -9, 0.5, 0)
+            Preview.Position       = UDim2.new(1, -8, 0.5, 0)
             Preview.BackgroundColor3 = default
-            Preview.Text           = ""
+            Preview.Text           = "  ▾"
+            Preview.TextColor3     = Color3.fromRGB(255,255,255)
+            Preview.TextSize       = 9
+            Preview.Font           = Enum.Font.GothamBold
+            Preview.TextXAlignment = Enum.TextXAlignment.Right
             Preview.Parent         = F
             Instance.new("UICorner", Preview).CornerRadius = UDim.new(0, 5)
+            local PrevStroke = Instance.new("UIStroke", Preview)
+            PrevStroke.Color = currentTheme.Accent
+            onTheme(function(t) PrevStroke.Color = t.Accent end)
 
-            local ColorObj = { Value = default }
-
-            -- Simple HSV popup
-            local Popup = Instance.new("Frame")
-            Popup.Size             = UDim2.new(0, 133, 0, 120)
-            Popup.AnchorPoint      = Vector2.new(1, 0)
-            Popup.Position         = UDim2.new(1, -9, 1, 3)
-            Popup.BackgroundColor3 = currentTheme.Tab
-            Popup.ZIndex           = 20
-            Popup.Visible          = false
-            Popup.Parent           = F
-            Instance.new("UICorner", Popup).CornerRadius = UDim.new(0, 8)
-            Instance.new("UIStroke", Popup).Color = currentTheme.Accent
-            onTheme(function(t) Popup.BackgroundColor3 = t.Tab; Popup:FindFirstChildOfClass("UIStroke").Color = t.Accent end)
-
+            local ColorObj   = { Value = default }
+            local cpOpen     = false
             local hVal, sVal, vVal = Color3.toHSV(default)
-            hVal = hVal; sVal = sVal; vVal = vVal
 
-            local function makeHSVSlider(label, yPos, initVal, onChange)
-                local SLbl = Instance.new("TextLabel")
-                SLbl.Size              = UDim2.new(1, -13, 0, 11)
-                SLbl.Position          = UDim2.new(0, 7, 0, yPos)
-                SLbl.BackgroundTransparency = 1
-                SLbl.Text              = label
-                SLbl.TextColor3        = currentTheme.Text
-                SLbl.TextSize = 8
-                SLbl.Font              = Enum.Font.Gotham
-                SLbl.ZIndex            = 21
-                SLbl.Parent            = Popup
-                onTheme(function(t) SLbl.TextColor3 = t.Text end)
+            -- ── Popup no OverlayLayer (igual ao Panel do dropdown) ──────
+            local POPW = 160
+            local POPH = 0  -- será calculado ao abrir
 
-                local STrk = Instance.new("Frame")
-                STrk.Size              = UDim2.new(1, -13, 0, 5)
-                STrk.Position          = UDim2.new(0, 7, 0, yPos + 18)
-                STrk.BackgroundColor3  = Color3.fromRGB(40,30,60)
-                STrk.ZIndex            = 21
-                STrk.Parent            = Popup
-                Instance.new("UICorner", STrk).CornerRadius = UDim.new(1, 0)
+            local Popup = Instance.new("Frame")
+            Popup.Name             = "ColorPopup"
+            Popup.Size             = UDim2.new(0, POPW, 0, 0)
+            Popup.Position         = UDim2.new(0, 0, 0, 0)
+            Popup.BackgroundColor3 = currentTheme.Tab
+            Popup.ZIndex           = 2
+            Popup.Visible          = false
+            Popup.ClipsDescendants = false
+            Popup.Parent           = OverlayLayer
+            Instance.new("UICorner", Popup).CornerRadius = UDim.new(0, 7)
+            local PopStroke = Instance.new("UIStroke", Popup)
+            PopStroke.Color = currentTheme.Accent
+            onTheme(function(t)
+                Popup.BackgroundColor3 = t.Tab
+                PopStroke.Color        = t.Accent
+            end)
 
-                local SFill = Instance.new("Frame")
-                SFill.Size             = UDim2.new(initVal, 0, 1, 0)
-                SFill.BackgroundColor3 = currentTheme.Accent
-                SFill.ZIndex           = 22
-                SFill.Parent           = STrk
-                Instance.new("UICorner", SFill).CornerRadius = UDim.new(1, 0)
-                onTheme(function(t) SFill.BackgroundColor3 = t.Accent end)
+            -- ── Botão X (igual ao dropdown) ─────────────────────────────
+            local CPClose = Instance.new("TextButton")
+            CPClose.Size             = UDim2.new(0, 18, 0, 18)
+            CPClose.AnchorPoint      = Vector2.new(1, 0)
+            CPClose.Position         = UDim2.new(1, -3, 0, 3)
+            CPClose.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
+            CPClose.Text             = "✕"
+            CPClose.TextColor3       = Color3.fromRGB(255,255,255)
+            CPClose.TextSize         = 9
+            CPClose.Font             = Enum.Font.GothamBold
+            CPClose.ZIndex           = 5
+            CPClose.Parent           = Popup
+            Instance.new("UICorner", CPClose).CornerRadius = UDim.new(1, 0)
 
-                local SBtn = Instance.new("TextButton")
-                SBtn.Size              = UDim2.new(1, 0, 1, 8)
-                SBtn.AnchorPoint       = Vector2.new(0, 0.5)
-                SBtn.Position          = UDim2.new(0, 0, 0.5, 0)
-                SBtn.BackgroundTransparency = 1
-                SBtn.Text              = ""
-                SBtn.ZIndex            = 23
-                SBtn.Parent            = STrk
+            -- ── Hex label ───────────────────────────────────────────────
+            local HexLbl = Instance.new("TextLabel")
+            HexLbl.Size              = UDim2.new(1, -28, 0, 14)
+            HexLbl.Position          = UDim2.new(0, 7, 0, 5)
+            HexLbl.BackgroundTransparency = 1
+            HexLbl.Text              = "#8B2BE2"
+            HexLbl.TextColor3        = currentTheme.Accent
+            HexLbl.TextSize          = 9
+            HexLbl.Font              = Enum.Font.GothamBold
+            HexLbl.TextXAlignment    = Enum.TextXAlignment.Left
+            HexLbl.ZIndex            = 3
+            HexLbl.Parent            = Popup
+            onTheme(function(t) HexLbl.TextColor3 = t.Accent end)
 
-                local dragging2 = false
-                SBtn.InputBegan:Connect(function(inp)
-                    if inp.UserInputType == Enum.UserInputType.MouseButton1 then
-                        dragging2 = true
-                        local pct = math.clamp((inp.Position.X - STrk.AbsolutePosition.X) / STrk.AbsoluteSize.X, 0, 1)
-                        SFill.Size = UDim2.new(pct, 0, 1, 0)
-                        onChange(pct)
-                    end
-                end)
-                UserInputService.InputChanged:Connect(function(inp)
-                    if dragging2 and inp.UserInputType == Enum.UserInputType.MouseMovement then
-                        local pct = math.clamp((inp.Position.X - STrk.AbsolutePosition.X) / STrk.AbsoluteSize.X, 0, 1)
-                        SFill.Size = UDim2.new(pct, 0, 1, 0)
-                        onChange(pct)
-                    end
-                end)
-                UserInputService.InputEnded:Connect(function(inp)
-                    if inp.UserInputType == Enum.UserInputType.MouseButton1 then dragging2 = false end
-                end)
-            end
+            -- ── HSV sliders ─────────────────────────────────────────────
+            local sliderYStart = 22
+            local sliderGap    = 30
 
             local function updateColor()
                 local c = Color3.fromHSV(hVal, sVal, vVal)
                 Preview.BackgroundColor3 = c
                 ColorObj.Value = c
+                -- atualiza hex label
+                local r = math.floor(c.R * 255 + 0.5)
+                local g = math.floor(c.G * 255 + 0.5)
+                local b = math.floor(c.B * 255 + 0.5)
+                HexLbl.Text = string.format("#%02X%02X%02X", r, g, b)
                 if flag then WindowObj.Flags = WindowObj.Flags or {}; WindowObj.Flags[flag] = c end
                 pcall(callback, c)
             end
 
-            makeHSVSlider("H", 10, hVal, function(v) hVal = v; updateColor() end)
-            makeHSVSlider("S", 50, sVal, function(v) sVal = v; updateColor() end)
-            makeHSVSlider("V", 90, vVal, function(v) vVal = v; updateColor() end)
+            local sliderDefs = {
+                { label="H", get=function() return hVal end, set=function(v) hVal=v end },
+                { label="S", get=function() return sVal end, set=function(v) sVal=v end },
+                { label="V", get=function() return vVal end, set=function(v) vVal=v end },
+            }
 
-            local popOpen = false
+            for si, sd in ipairs(sliderDefs) do
+                local yBase = sliderYStart + (si-1)*sliderGap
+
+                local SLbl = Instance.new("TextLabel")
+                SLbl.Size              = UDim2.new(0, 10, 0, 10)
+                SLbl.Position          = UDim2.new(0, 7, 0, yBase)
+                SLbl.BackgroundTransparency = 1
+                SLbl.Text              = sd.label
+                SLbl.TextColor3        = currentTheme.Text
+                SLbl.TextSize          = 8
+                SLbl.Font              = Enum.Font.GothamBold
+                SLbl.ZIndex            = 3
+                SLbl.Parent            = Popup
+                onTheme(function(t) SLbl.TextColor3 = t.Text end)
+
+                local ValLbl = Instance.new("TextLabel")
+                ValLbl.Size            = UDim2.new(0, 28, 0, 10)
+                ValLbl.AnchorPoint     = Vector2.new(1, 0)
+                ValLbl.Position        = UDim2.new(1, -7, 0, yBase)
+                ValLbl.BackgroundTransparency = 1
+                ValLbl.Text            = string.format("%.2f", sd.get())
+                ValLbl.TextColor3      = currentTheme.Accent
+                ValLbl.TextSize        = 8
+                ValLbl.Font            = Enum.Font.Gotham
+                ValLbl.TextXAlignment  = Enum.TextXAlignment.Right
+                ValLbl.ZIndex          = 3
+                ValLbl.Parent          = Popup
+                onTheme(function(t) ValLbl.TextColor3 = t.Accent end)
+
+                local STrk = Instance.new("Frame")
+                STrk.Size              = UDim2.new(1, -14, 0, 6)
+                STrk.Position          = UDim2.new(0, 7, 0, yBase + 13)
+                STrk.BackgroundColor3  = Color3.fromRGB(40,30,60)
+                STrk.ZIndex            = 3
+                STrk.Parent            = Popup
+                Instance.new("UICorner", STrk).CornerRadius = UDim.new(1, 0)
+
+                local SFill = Instance.new("Frame")
+                SFill.Size             = UDim2.new(sd.get(), 0, 1, 0)
+                SFill.BackgroundColor3 = currentTheme.Accent
+                SFill.ZIndex           = 4
+                SFill.Parent           = STrk
+                Instance.new("UICorner", SFill).CornerRadius = UDim.new(1, 0)
+                onTheme(function(t) SFill.BackgroundColor3 = t.Accent end)
+
+                local SKnob = Instance.new("Frame")
+                SKnob.Size             = UDim2.new(0, 10, 0, 10)
+                SKnob.AnchorPoint      = Vector2.new(0.5, 0.5)
+                SKnob.Position         = UDim2.new(sd.get(), 0, 0.5, 0)
+                SKnob.BackgroundColor3 = Color3.fromRGB(255,255,255)
+                SKnob.ZIndex           = 5
+                SKnob.Parent           = STrk
+                Instance.new("UICorner", SKnob).CornerRadius = UDim.new(1, 0)
+
+                local SBtn = Instance.new("TextButton")
+                SBtn.Size              = UDim2.new(1, 0, 1, 10)
+                SBtn.AnchorPoint       = Vector2.new(0, 0.5)
+                SBtn.Position          = UDim2.new(0, 0, 0.5, 0)
+                SBtn.BackgroundTransparency = 1
+                SBtn.Text              = ""
+                SBtn.ZIndex            = 6
+                SBtn.Parent            = STrk
+
+                local draggingCP = false
+                local function applyPos(inp)
+                    local pct = math.clamp((inp.Position.X - STrk.AbsolutePosition.X) / STrk.AbsoluteSize.X, 0, 1)
+                    SFill.Size   = UDim2.new(pct, 0, 1, 0)
+                    SKnob.Position = UDim2.new(pct, 0, 0.5, 0)
+                    ValLbl.Text  = string.format("%.2f", pct)
+                    sd.set(pct)
+                    updateColor()
+                end
+
+                SBtn.InputBegan:Connect(function(inp)
+                    if inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch then
+                        draggingCP = true
+                        applyPos(inp)
+                    end
+                end)
+                UserInputService.InputChanged:Connect(function(inp)
+                    if draggingCP and (inp.UserInputType == Enum.UserInputType.MouseMovement or inp.UserInputType == Enum.UserInputType.Touch) then
+                        applyPos(inp)
+                    end
+                end)
+                UserInputService.InputEnded:Connect(function(inp)
+                    if inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch then
+                        draggingCP = false
+                    end
+                end)
+            end
+
+            -- Altura total do popup: 3 sliders * 30 + header + padding
+            POPH = sliderYStart + 3 * sliderGap + 6
+
+            -- ── Open / Close ────────────────────────────────────────────
+            local function closePopup()
+                cpOpen = false
+                Tween(Popup, {Size = UDim2.new(0, POPW, 0, 0)}, 0.18):Play()
+                task.delay(0.19, function() Popup.Visible = false end)
+            end
+
+            CPClose.MouseButton1Click:Connect(closePopup)
+
             Preview.MouseButton1Click:Connect(function()
-                popOpen = not popOpen
-                Popup.Visible = popOpen
+                if cpOpen then
+                    closePopup()
+                    return
+                end
+                cpOpen = true
+
+                local abs  = Preview.AbsolutePosition
+                local size = Preview.AbsoluteSize
+                local px   = abs.X + size.X - POPW
+                local py   = abs.Y + size.Y + 3
+
+                local screenH = ScreenGui.AbsoluteSize.Y
+                if py + POPH > screenH then
+                    py = abs.Y - POPH - 3
+                end
+
+                Popup.Size     = UDim2.new(0, POPW, 0, 0)
+                Popup.Position = UDim2.new(0, px, 0, py)
+                Popup.Visible  = true
+                Tween(Popup, {Size = UDim2.new(0, POPW, 0, POPH)}, 0.22, Enum.EasingStyle.Back):Play()
             end)
 
             function ColorObj:Set(v, silent)
