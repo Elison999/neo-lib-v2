@@ -425,28 +425,31 @@ function NeonLib:CreateWindow(config)
     -- ════════════════════════════════
     --   MAIN WINDOW FRAME
     -- ════════════════════════════════
+    -- ────────────────────────────────────────────────────────
+    -- CORREÇÃO CANTOS: MainFrame tem UICorner MAS *nunca*
+    -- ClipsDescendants (combinar os dois causa o bug de cantos
+    -- ao redimensionar). O ClipFrame interno (sem UICorner)
+    -- faz o clip do conteúdo de forma segura.
+    -- ────────────────────────────────────────────────────────
     local MainFrame = Instance.new("Frame")
-    MainFrame.Name             = "MainFrame"
-    MainFrame.Size             = windowSize
-    MainFrame.AnchorPoint      = Vector2.new(0.5, 0.5)
-    MainFrame.Position         = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.BackgroundColor3 = currentTheme.Bg
+    MainFrame.Name                  = "MainFrame"
+    MainFrame.Size                  = windowSize
+    MainFrame.AnchorPoint           = Vector2.new(0.5, 0.5)
+    MainFrame.Position              = UDim2.new(0.5, 0, 0.5, 0)
+    MainFrame.BackgroundColor3      = currentTheme.Bg
     MainFrame.BackgroundTransparency = 0
-    -- NÃO usar ClipsDescendants aqui: ele corta os cantos arredondados do UICorner
-    MainFrame.ClipsDescendants = false
-    MainFrame.Parent           = ScreenGui
+    MainFrame.ClipsDescendants      = false   -- NUNCA true aqui!
+    MainFrame.Parent                = ScreenGui
     Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 14)
 
-    -- Frame interno que faz o clip real sem quebrar os cantos do MainFrame
+    -- Frame interno: mesma posição/tamanho, sem UICorner, com ClipsDescendants
     local ClipFrame = Instance.new("Frame")
-    ClipFrame.Name              = "ClipFrame"
-    ClipFrame.Size              = UDim2.new(1, 0, 1, 0)
+    ClipFrame.Name                  = "ClipFrame"
+    ClipFrame.Size                  = UDim2.new(1, 0, 1, 0)
+    ClipFrame.Position              = UDim2.new(0, 0, 0, 0)
     ClipFrame.BackgroundTransparency = 1
-    ClipFrame.ClipsDescendants  = true
-    ClipFrame.ZIndex            = 1
-    ClipFrame.Parent            = MainFrame
-    -- UICorner no ClipFrame com o mesmo raio garante que o clip também seja redondo
-    Instance.new("UICorner", ClipFrame).CornerRadius = UDim.new(0, 14)
+    ClipFrame.ClipsDescendants      = true    -- clip sem UICorner = sem bug
+    ClipFrame.Parent                = MainFrame
 
 
     local MainStroke = Instance.new("UIStroke", MainFrame)
@@ -697,6 +700,19 @@ function NeonLib:CreateWindow(config)
     Divider.Parent            = ClipFrame
 
     onTheme(function(t) Divider.BackgroundColor3 = t.Accent end)
+
+    -- ════════════════════════════════
+    --   OVERLAY LAYER para Dropdowns
+    --   Filho direto do ScreenGui com ZIndex alto.
+    --   ZIndexBehavior=Sibling: ZIndex é comparado entre
+    --   irmãos, logo este frame fica sempre na frente do MainFrame.
+    -- ════════════════════════════════
+    local OverlayLayer = Instance.new("Frame")
+    OverlayLayer.Name                   = "NeonLib_Overlay"
+    OverlayLayer.Size                   = UDim2.new(1, 0, 1, 0)
+    OverlayLayer.BackgroundTransparency = 1
+    OverlayLayer.ZIndex                 = 100   -- MainFrame está no ZIndex padrão (1)
+    OverlayLayer.Parent                 = ScreenGui
 
     -- ════════════════════════════════
     --   SEARCH LOGIC
@@ -1237,10 +1253,10 @@ function NeonLib:CreateWindow(config)
             Panel.AnchorPoint      = Vector2.new(0, 0)
             Panel.Position         = UDim2.new(0, 0, 0, 0)   -- será atualizado ao abrir
             Panel.BackgroundColor3 = currentTheme.Tab
-            Panel.ZIndex           = 500   -- sempre acima de tudo
+            Panel.ZIndex           = 2     -- relativo ao OverlayLayer (ZIndex 100 no ScreenGui)
             Panel.Visible          = false
             Panel.ClipsDescendants = true
-            Panel.Parent           = ScreenGui  -- <-- ScreenGui, não F
+            Panel.Parent           = OverlayLayer  -- <-- OverlayLayer garante ficar na frente
             Instance.new("UICorner", Panel).CornerRadius = UDim.new(0, 10)
             local PanStroke = Instance.new("UIStroke", Panel)
             PanStroke.Color = currentTheme.Accent
@@ -1255,7 +1271,7 @@ function NeonLib:CreateWindow(config)
             PanelScroll.ScrollBarThickness = 2
             PanelScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
             PanelScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-            PanelScroll.ZIndex     = 501
+            PanelScroll.ZIndex     = 3
             PanelScroll.Parent     = Panel
 
             local PanList = Instance.new("UIListLayout")
@@ -1301,7 +1317,7 @@ function NeonLib:CreateWindow(config)
                     OBtn.TextSize        = 13
                     OBtn.Font            = Enum.Font.Gotham
                     OBtn.LayoutOrder     = i
-                    OBtn.ZIndex          = 502
+                    OBtn.ZIndex          = 4
                     OBtn.Parent          = PanelScroll
                     Instance.new("UICorner", OBtn).CornerRadius = UDim.new(0, 6)
                     onTheme(function(t)
@@ -1363,7 +1379,6 @@ function NeonLib:CreateWindow(config)
             function DropObj:Refresh(newOpts)
                 options = newOpts
                 buildOptions(newOpts)
-            end
             end
 
             return DropObj
