@@ -51,10 +51,7 @@ local function MakeDraggable(frame, handle)
     UserInputService.InputChanged:Connect(function(input)
         if input == dragInput and dragging then
             local delta = input.Position - dragStart
-            frame.Position = UDim2.new(
-                startPos.X.Scale, startPos.X.Offset + delta.X,
-                startPos.Y.Scale, startPos.Y.Offset + delta.Y
-            )
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
 end
@@ -124,7 +121,7 @@ function NeonLib:CreateWindow(config)
 
     -- Config defaults
     local windowTitle    = config.Title         or "NeonLib"
-    local windowSize     = config.Size          or UDim2.new(0, 640, 0, 460)
+    local windowSize     = config.Size          or UDim2.new(0, 427, 0, 307)
     local defaultTheme   = config.Theme         or "Neon Purple"
     local KeySystem      = config.KeySystem     or false
     local KeyName        = config.KeyName       or "Key System"
@@ -183,7 +180,7 @@ function NeonLib:CreateWindow(config)
     LoadFrame.Parent          = ScreenGui
 
     local LoadImg = Instance.new("ImageLabel")
-    LoadImg.Size              = UDim2.new(0, 120, 0, 120)
+    LoadImg.Size              = UDim2.new(0, 80, 0, 80)
     LoadImg.AnchorPoint       = Vector2.new(0.5, 0.5)
     LoadImg.Position          = UDim2.new(0.5, 0, 0.42, 0)
     LoadImg.BackgroundTransparency = 1
@@ -192,36 +189,36 @@ function NeonLib:CreateWindow(config)
     LoadImg.Parent            = LoadFrame
 
     local LoadCorner = Instance.new("UICorner")
-    LoadCorner.CornerRadius   = UDim.new(0, 18)
+    LoadCorner.CornerRadius   = UDim.new(0, 12)
     LoadCorner.Parent         = LoadImg
 
     local LoadTitle = Instance.new("TextLabel")
-    LoadTitle.Size            = UDim2.new(0, 400, 0, 40)
+    LoadTitle.Size            = UDim2.new(0, 267, 0, 27)
     LoadTitle.AnchorPoint     = Vector2.new(0.5, 0.5)
     LoadTitle.Position        = UDim2.new(0.5, 0, 0.58, 0)
     LoadTitle.BackgroundTransparency = 1
     LoadTitle.Text            = LoadingName
     LoadTitle.TextColor3      = Color3.fromRGB(220, 210, 255)
-    LoadTitle.TextSize        = 26
+    LoadTitle.TextSize = 17
     LoadTitle.Font            = Enum.Font.GothamBold
     LoadTitle.ZIndex          = 101
     LoadTitle.Parent          = LoadFrame
 
     local LoadSub = Instance.new("TextLabel")
-    LoadSub.Size              = UDim2.new(0, 400, 0, 28)
+    LoadSub.Size              = UDim2.new(0, 267, 0, 19)
     LoadSub.AnchorPoint       = Vector2.new(0.5, 0.5)
     LoadSub.Position          = UDim2.new(0.5, 0, 0.64, 0)
     LoadSub.BackgroundTransparency = 1
     LoadSub.Text              = "Loading..."
     LoadSub.TextColor3        = Color3.fromRGB(140, 120, 200)
-    LoadSub.TextSize          = 16
+    LoadSub.TextSize = 11
     LoadSub.Font              = Enum.Font.Gotham
     LoadSub.ZIndex            = 101
     LoadSub.Parent            = LoadFrame
 
     -- Progress bar
     local ProgressBg = Instance.new("Frame")
-    ProgressBg.Size           = UDim2.new(0, 300, 0, 6)
+    ProgressBg.Size           = UDim2.new(0, 200, 0, 4)
     ProgressBg.AnchorPoint    = Vector2.new(0.5, 0.5)
     ProgressBg.Position       = UDim2.new(0.5, 0, 0.72, 0)
     ProgressBg.BackgroundColor3 = Color3.fromRGB(30, 20, 50)
@@ -287,94 +284,94 @@ function NeonLib:CreateWindow(config)
     if KeySystem and not keyPassed then
         local KeyFrame = Instance.new("Frame")
         KeyFrame.Name             = "KeyFrame"
-        KeyFrame.Size             = UDim2.new(0, 400, 0, 280)
+        KeyFrame.Size             = UDim2.new(0, 267, 0, 187)
         KeyFrame.AnchorPoint      = Vector2.new(0.5, 0.5)
         KeyFrame.Position         = UDim2.new(0.5, 0, 0.5, 0)
         KeyFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 25)
         KeyFrame.ZIndex           = 200
         KeyFrame.Parent           = ScreenGui
-        Instance.new("UICorner", KeyFrame).CornerRadius = UDim.new(0, 16)
+        Instance.new("UICorner", KeyFrame).CornerRadius = UDim.new(0, 11)
 
         local KeyStroke = Instance.new("UIStroke", KeyFrame)
         KeyStroke.Color     = Color3.fromRGB(138, 43, 226)
-        KeyStroke.Thickness = 1.5
+        KeyStroke.Thickness = 1.0
 
         local KTitle = Instance.new("TextLabel")
-        KTitle.Size               = UDim2.new(1, 0, 0, 48)
+        KTitle.Size               = UDim2.new(1, 0, 0, 32)
         KTitle.Position           = UDim2.new(0, 0, 0, 0)
         KTitle.BackgroundTransparency = 1
         KTitle.Text               = "🔑  " .. KeyName
         KTitle.TextColor3         = Color3.fromRGB(220, 210, 255)
-        KTitle.TextSize           = 20
+        KTitle.TextSize = 13
         KTitle.Font               = Enum.Font.GothamBold
         KTitle.ZIndex             = 201
         KTitle.Parent             = KeyFrame
 
         local KSub = Instance.new("TextLabel")
-        KSub.Size                 = UDim2.new(0.85, 0, 0, 28)
+        KSub.Size                 = UDim2.new(0.85, 0, 0, 19)
         KSub.AnchorPoint          = Vector2.new(0.5, 0)
-        KSub.Position             = UDim2.new(0.5, 0, 0, 52)
+        KSub.Position             = UDim2.new(0.5, 0, 0, 35)
         KSub.BackgroundTransparency = 1
         KSub.Text                 = "Enter your access key below"
         KSub.TextColor3           = Color3.fromRGB(140, 120, 180)
-        KSub.TextSize             = 14
+        KSub.TextSize = 9
         KSub.Font                 = Enum.Font.Gotham
         KSub.ZIndex               = 201
         KSub.Parent               = KeyFrame
 
         local KInput = Instance.new("TextBox")
-        KInput.Size               = UDim2.new(0.85, 0, 0, 42)
+        KInput.Size               = UDim2.new(0.85, 0, 0, 28)
         KInput.AnchorPoint        = Vector2.new(0.5, 0)
-        KInput.Position           = UDim2.new(0.5, 0, 0, 96)
+        KInput.Position           = UDim2.new(0.5, 0, 0, 64)
         KInput.BackgroundColor3   = Color3.fromRGB(22, 14, 38)
         KInput.Text               = ""
         KInput.PlaceholderText    = "Paste your key here..."
         KInput.TextColor3         = Color3.fromRGB(220, 210, 255)
         KInput.PlaceholderColor3  = Color3.fromRGB(100, 80, 140)
-        KInput.TextSize           = 15
+        KInput.TextSize = 10
         KInput.Font               = Enum.Font.Gotham
         KInput.ClearTextOnFocus   = false
         KInput.ZIndex             = 201
         KInput.Parent             = KeyFrame
-        Instance.new("UICorner", KInput).CornerRadius = UDim.new(0, 10)
+        Instance.new("UICorner", KInput).CornerRadius = UDim.new(0, 7)
         Instance.new("UIStroke", KInput).Color = Color3.fromRGB(80, 50, 120)
         local kpad = Instance.new("UIPadding", KInput)
-        kpad.PaddingLeft = UDim.new(0, 12)
+        kpad.PaddingLeft = UDim.new(0, 8)
 
         local KStatus = Instance.new("TextLabel")
-        KStatus.Size              = UDim2.new(0.85, 0, 0, 22)
+        KStatus.Size              = UDim2.new(0.85, 0, 0, 15)
         KStatus.AnchorPoint       = Vector2.new(0.5, 0)
-        KStatus.Position          = UDim2.new(0.5, 0, 0, 148)
+        KStatus.Position          = UDim2.new(0.5, 0, 0, 99)
         KStatus.BackgroundTransparency = 1
         KStatus.Text              = ""
         KStatus.TextColor3        = Color3.fromRGB(255, 80, 80)
-        KStatus.TextSize          = 13
+        KStatus.TextSize = 9
         KStatus.Font              = Enum.Font.Gotham
         KStatus.ZIndex            = 201
         KStatus.Parent            = KeyFrame
 
         local KBtn = Instance.new("TextButton")
-        KBtn.Size                 = UDim2.new(0.85, 0, 0, 42)
+        KBtn.Size                 = UDim2.new(0.85, 0, 0, 28)
         KBtn.AnchorPoint          = Vector2.new(0.5, 0)
-        KBtn.Position             = UDim2.new(0.5, 0, 0, 180)
+        KBtn.Position             = UDim2.new(0.5, 0, 0, 120)
         KBtn.BackgroundColor3     = Color3.fromRGB(138, 43, 226)
         KBtn.Text                 = "Unlock Access"
         KBtn.TextColor3           = Color3.fromRGB(255, 255, 255)
-        KBtn.TextSize             = 16
+        KBtn.TextSize = 11
         KBtn.Font                 = Enum.Font.GothamBold
         KBtn.ZIndex               = 201
         KBtn.Parent               = KeyFrame
-        Instance.new("UICorner", KBtn).CornerRadius = UDim.new(0, 10)
+        Instance.new("UICorner", KBtn).CornerRadius = UDim.new(0, 7)
 
         if GetKeyByWebsite and WebSite ~= "" then
             local KWeb = Instance.new("TextButton")
-            KWeb.Size               = UDim2.new(0.85, 0, 0, 30)
+            KWeb.Size               = UDim2.new(0.85, 0, 0, 20)
             KWeb.AnchorPoint        = Vector2.new(0.5, 0)
-            KWeb.Position           = UDim2.new(0.5, 0, 0, 234)
+            KWeb.Position           = UDim2.new(0.5, 0, 0, 156)
             KWeb.BackgroundTransparency = 1
             KWeb.Text               = "🌐 Get Key →  " .. WebSite
             KWeb.TextColor3         = Color3.fromRGB(138, 43, 226)
-            KWeb.TextSize           = 12
+            KWeb.TextSize = 8
             KWeb.Font               = Enum.Font.Gotham
             KWeb.ZIndex             = 201
             KWeb.Parent             = KeyFrame
@@ -410,11 +407,11 @@ function NeonLib:CreateWindow(config)
             else
                 KStatus.TextColor3 = Color3.fromRGB(255, 80, 80)
                 KStatus.Text = "✘ Invalid key. Try again."
-                Tween(KeyFrame, {Position = UDim2.new(0.5,-8,0.5,0)}, 0.05):Play()
+                Tween(KeyFrame, {Position = UDim2.new(0.5, -5, 0.5, 0)}, 0.05):Play()
                 task.wait(0.05)
-                Tween(KeyFrame, {Position = UDim2.new(0.5, 8,0.5,0)}, 0.05):Play()
+                Tween(KeyFrame, {Position = UDim2.new(0.5, 5, 0.5, 0)}, 0.05):Play()
                 task.wait(0.05)
-                Tween(KeyFrame, {Position = UDim2.new(0.5, 0,0.5,0)}, 0.05):Play()
+                Tween(KeyFrame, {Position = UDim2.new(0.5, 0, 0.5, 0)}, 0.05):Play()
             end
         end)
 
@@ -440,7 +437,7 @@ function NeonLib:CreateWindow(config)
     MainFrame.BackgroundTransparency = 0
     MainFrame.ClipsDescendants      = false   -- NUNCA true aqui!
     MainFrame.Parent                = ScreenGui
-    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 14)
+    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 9)
 
     -- Frame interno: mesma posição/tamanho, sem UICorner, com ClipsDescendants
     local ClipFrame = Instance.new("Frame")
@@ -454,7 +451,7 @@ function NeonLib:CreateWindow(config)
 
     local MainStroke = Instance.new("UIStroke", MainFrame)
     MainStroke.Color     = currentTheme.Accent
-    MainStroke.Thickness = 1.2
+    MainStroke.Thickness = 0.8
 
     -- Subtle gradient overlay
     local MainGrad = Instance.new("UIGradient")
@@ -475,7 +472,7 @@ function NeonLib:CreateWindow(config)
     end)
 
     -- Entrance animation
-    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 30)
+    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 20)
     MainFrame.BackgroundTransparency = 1
     task.defer(function()
         Tween(MainFrame, {
@@ -489,15 +486,15 @@ function NeonLib:CreateWindow(config)
     -- ════════════════════════════════
     local TitleBar = Instance.new("Frame")
     TitleBar.Name              = "TitleBar"
-    TitleBar.Size              = UDim2.new(1, 0, 0, 44)
+    TitleBar.Size              = UDim2.new(1, 0, 0, 29)
     TitleBar.BackgroundColor3  = currentTheme.Tab
     TitleBar.BackgroundTransparency = 0
     TitleBar.Parent            = ClipFrame
-    Instance.new("UICorner", TitleBar).CornerRadius = UDim.new(0, 14)
+    Instance.new("UICorner", TitleBar).CornerRadius = UDim.new(0, 9)
 
     -- Fix bottom corners of title bar
     local TitleFix = Instance.new("Frame")
-    TitleFix.Size             = UDim2.new(1, 0, 0, 8)
+    TitleFix.Size             = UDim2.new(1, 0, 0, 5)
     TitleFix.AnchorPoint      = Vector2.new(0, 1)
     TitleFix.Position         = UDim2.new(0, 0, 1, 0)
     TitleFix.BackgroundColor3 = currentTheme.Tab
@@ -511,9 +508,9 @@ function NeonLib:CreateWindow(config)
 
     -- Accent left stripe
     local TitleAccent = Instance.new("Frame")
-    TitleAccent.Size             = UDim2.new(0, 3, 0, 26)
+    TitleAccent.Size             = UDim2.new(0, 2, 0, 17)
     TitleAccent.AnchorPoint      = Vector2.new(0, 0.5)
-    TitleAccent.Position         = UDim2.new(0, 10, 0.5, 0)
+    TitleAccent.Position         = UDim2.new(0, 7, 0.5, 0)
     TitleAccent.BackgroundColor3 = currentTheme.Accent
     TitleAccent.Parent           = TitleBar
     Instance.new("UICorner", TitleAccent).CornerRadius = UDim.new(1, 0)
@@ -521,12 +518,12 @@ function NeonLib:CreateWindow(config)
     onTheme(function(t) TitleAccent.BackgroundColor3 = t.Accent end)
 
     local TitleLabel = Instance.new("TextLabel")
-    TitleLabel.Size              = UDim2.new(0, 300, 1, 0)
-    TitleLabel.Position          = UDim2.new(0, 22, 0, 0)
+    TitleLabel.Size              = UDim2.new(0, 200, 1, 0)
+    TitleLabel.Position          = UDim2.new(0, 15, 0, 0)
     TitleLabel.BackgroundTransparency = 1
     TitleLabel.Text              = windowTitle
     TitleLabel.TextColor3        = currentTheme.Text
-    TitleLabel.TextSize          = 16
+    TitleLabel.TextSize = 11
     TitleLabel.Font              = Enum.Font.GothamBold
     TitleLabel.TextXAlignment    = Enum.TextXAlignment.Left
     TitleLabel.Parent            = TitleBar
@@ -535,25 +532,25 @@ function NeonLib:CreateWindow(config)
 
     -- Close / Minimize
     local BtnClose = Instance.new("TextButton")
-    BtnClose.Size              = UDim2.new(0, 28, 0, 28)
+    BtnClose.Size              = UDim2.new(0, 19, 0, 19)
     BtnClose.AnchorPoint       = Vector2.new(1, 0.5)
-    BtnClose.Position          = UDim2.new(1, -10, 0.5, 0)
+    BtnClose.Position          = UDim2.new(1, -7, 0.5, 0)
     BtnClose.BackgroundColor3  = Color3.fromRGB(255, 70, 70)
     BtnClose.Text              = "✕"
     BtnClose.TextColor3        = Color3.fromRGB(255,255,255)
-    BtnClose.TextSize          = 13
+    BtnClose.TextSize = 9
     BtnClose.Font              = Enum.Font.GothamBold
     BtnClose.Parent            = TitleBar
     Instance.new("UICorner", BtnClose).CornerRadius = UDim.new(1, 0)
 
     local BtnMin = Instance.new("TextButton")
-    BtnMin.Size                = UDim2.new(0, 28, 0, 28)
+    BtnMin.Size                = UDim2.new(0, 19, 0, 19)
     BtnMin.AnchorPoint         = Vector2.new(1, 0.5)
-    BtnMin.Position            = UDim2.new(1, -44, 0.5, 0)
+    BtnMin.Position            = UDim2.new(1, -29, 0.5, 0)
     BtnMin.BackgroundColor3    = Color3.fromRGB(255, 190, 50)
     BtnMin.Text                = "—"
     BtnMin.TextColor3          = Color3.fromRGB(120, 80, 0)
-    BtnMin.TextSize             = 15
+    BtnMin.TextSize = 10
     BtnMin.Font                = Enum.Font.GothamBold
     BtnMin.Parent              = TitleBar
     Instance.new("UICorner", BtnMin).CornerRadius = UDim.new(1, 0)
@@ -563,8 +560,8 @@ function NeonLib:CreateWindow(config)
     -- Topbar toggle button (outside window, floating)
     local ToggleBtn = Instance.new("ImageButton")
     ToggleBtn.Name             = "NeonToggle"
-    ToggleBtn.Size             = UDim2.new(0, 38, 0, 38)
-    ToggleBtn.Position         = UDim2.new(0, 12, 0, 12)
+    ToggleBtn.Size             = UDim2.new(0, 25, 0, 25)
+    ToggleBtn.Position         = UDim2.new(0, 8, 0, 8)
     ToggleBtn.BackgroundColor3 = currentTheme.Accent
     ToggleBtn.Image            = DecalId
     ToggleBtn.Parent           = ScreenGui
@@ -623,8 +620,8 @@ function NeonLib:CreateWindow(config)
     -- ════════════════════════════════
     local SideBar = Instance.new("Frame")
     SideBar.Name              = "SideBar"
-    SideBar.Size              = UDim2.new(0, 150, 1, -44)
-    SideBar.Position          = UDim2.new(0, 0, 0, 44)
+    SideBar.Size              = UDim2.new(0, 100, 1, -29)
+    SideBar.Position          = UDim2.new(0, 0, 0, 29)
     SideBar.BackgroundColor3  = currentTheme.Tab
     SideBar.BackgroundTransparency = 0
     SideBar.Parent            = ClipFrame
@@ -634,21 +631,21 @@ function NeonLib:CreateWindow(config)
     -- Search bar inside sidebar
     local SearchBox = Instance.new("TextBox")
     SearchBox.Name            = "SearchBox"
-    SearchBox.Size            = UDim2.new(1, -12, 0, 32)
+    SearchBox.Size            = UDim2.new(1, -8, 0, 21)
     SearchBox.AnchorPoint     = Vector2.new(0.5, 0)
-    SearchBox.Position        = UDim2.new(0.5, 0, 0, 8)
+    SearchBox.Position        = UDim2.new(0.5, 0, 0, 5)
     SearchBox.BackgroundColor3 = currentTheme.Element
     SearchBox.PlaceholderText = "🔍 Search..."
     SearchBox.PlaceholderColor3 = Color3.fromRGB(100, 90, 130)
     SearchBox.Text            = ""
     SearchBox.TextColor3      = currentTheme.Text
-    SearchBox.TextSize        = 13
+    SearchBox.TextSize = 9
     SearchBox.Font            = Enum.Font.Gotham
     SearchBox.ClearTextOnFocus = false
     SearchBox.Parent          = SideBar
-    Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0, 8)
+    Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0, 5)
     local sp = Instance.new("UIPadding", SearchBox)
-    sp.PaddingLeft = UDim.new(0, 10)
+    sp.PaddingLeft = UDim.new(0, 7)
 
     onTheme(function(t)
         SearchBox.BackgroundColor3 = t.Element
@@ -657,10 +654,10 @@ function NeonLib:CreateWindow(config)
 
     local TabScroll = Instance.new("ScrollingFrame")
     TabScroll.Name             = "TabScroll"
-    TabScroll.Size             = UDim2.new(1, 0, 1, -52)
-    TabScroll.Position         = UDim2.new(0, 0, 0, 50)
+    TabScroll.Size             = UDim2.new(1, 0, 1, -35)
+    TabScroll.Position         = UDim2.new(0, 0, 0, 33)
     TabScroll.BackgroundTransparency = 1
-    TabScroll.ScrollBarThickness = 2
+    TabScroll.ScrollBarThickness = 0.7
     TabScroll.ScrollBarImageColor3 = currentTheme.Accent
     TabScroll.CanvasSize       = UDim2.new(0, 0, 0, 0)
     TabScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -670,20 +667,20 @@ function NeonLib:CreateWindow(config)
 
     local TabList = Instance.new("UIListLayout")
     TabList.SortOrder          = Enum.SortOrder.LayoutOrder
-    TabList.Padding            = UDim.new(0, 4)
+    TabList.Padding            = UDim.new(0, 3)
     TabList.Parent             = TabScroll
     local TabPad = Instance.new("UIPadding", TabScroll)
-    TabPad.PaddingTop    = UDim.new(0, 4)
-    TabPad.PaddingLeft   = UDim.new(0, 6)
-    TabPad.PaddingRight  = UDim.new(0, 6)
+    TabPad.PaddingTop    = UDim.new(0, 3)
+    TabPad.PaddingLeft   = UDim.new(0, 4)
+    TabPad.PaddingRight  = UDim.new(0, 4)
 
     -- ════════════════════════════════
     --   CONTENT AREA
     -- ════════════════════════════════
     local ContentArea = Instance.new("Frame")
     ContentArea.Name           = "ContentArea"
-    ContentArea.Size           = UDim2.new(1, -150, 1, -44)
-    ContentArea.Position       = UDim2.new(0, 150, 0, 44)
+    ContentArea.Size           = UDim2.new(1, -100, 1, -29)
+    ContentArea.Position       = UDim2.new(0, 100, 0, 29)
     ContentArea.BackgroundColor3 = currentTheme.Bg
     ContentArea.BackgroundTransparency = 0
     ContentArea.ClipsDescendants = true
@@ -693,8 +690,8 @@ function NeonLib:CreateWindow(config)
 
     -- Divider line between sidebar and content
     local Divider = Instance.new("Frame")
-    Divider.Size              = UDim2.new(0, 1, 1, -44)
-    Divider.Position          = UDim2.new(0, 150, 0, 44)
+    Divider.Size              = UDim2.new(0, 1, 1, -29)
+    Divider.Position          = UDim2.new(0, 100, 0, 29)
     Divider.BackgroundColor3  = currentTheme.Accent
     Divider.BackgroundTransparency = 0.7
     Divider.Parent            = ClipFrame
@@ -757,29 +754,29 @@ function NeonLib:CreateWindow(config)
     local function createTabButton(tabName, order)
         local Btn = Instance.new("TextButton")
         Btn.Name               = tabName
-        Btn.Size               = UDim2.new(1, 0, 0, 36)
+        Btn.Size               = UDim2.new(1, 0, 0, 24)
         Btn.BackgroundColor3   = currentTheme.Element
         Btn.BackgroundTransparency = 0.4
         Btn.Text               = ""
         Btn.LayoutOrder        = order or 0
         Btn.Parent             = TabScroll
-        Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 8)
+        Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 5)
 
         local BtnLabel = Instance.new("TextLabel")
-        BtnLabel.Size          = UDim2.new(1, -16, 1, 0)
-        BtnLabel.Position      = UDim2.new(0, 10, 0, 0)
+        BtnLabel.Size          = UDim2.new(1, -11, 1, 0)
+        BtnLabel.Position      = UDim2.new(0, 7, 0, 0)
         BtnLabel.BackgroundTransparency = 1
         BtnLabel.Text          = tabName
         BtnLabel.TextColor3    = currentTheme.Text
-        BtnLabel.TextSize      = 13
+        BtnLabel.TextSize = 9
         BtnLabel.Font          = Enum.Font.Gotham
         BtnLabel.TextXAlignment = Enum.TextXAlignment.Left
         BtnLabel.Parent        = Btn
 
         local BtnIndicator = Instance.new("Frame")
-        BtnIndicator.Size      = UDim2.new(0, 3, 0, 22)
+        BtnIndicator.Size      = UDim2.new(0, 2, 0, 15)
         BtnIndicator.AnchorPoint = Vector2.new(0, 0.5)
-        BtnIndicator.Position  = UDim2.new(0, 2, 0.5, 0)
+        BtnIndicator.Position  = UDim2.new(0, 1, 0.5, 0)
         BtnIndicator.BackgroundColor3 = currentTheme.Accent
         BtnIndicator.BackgroundTransparency = 1
         BtnIndicator.Parent    = Btn
@@ -803,7 +800,7 @@ function NeonLib:CreateWindow(config)
         TabContent.Name            = "Tab_" .. tabName
         TabContent.Size            = UDim2.new(1, 0, 1, 0)
         TabContent.BackgroundTransparency = 1
-        TabContent.ScrollBarThickness = 3
+        TabContent.ScrollBarThickness = 1.3
         TabContent.ScrollBarImageColor3 = currentTheme.Accent
         TabContent.CanvasSize      = UDim2.new(0, 0, 0, 0)
         TabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -814,13 +811,13 @@ function NeonLib:CreateWindow(config)
 
         local ContentList = Instance.new("UIListLayout")
         ContentList.SortOrder  = Enum.SortOrder.LayoutOrder
-        ContentList.Padding    = UDim.new(0, 6)
+        ContentList.Padding    = UDim.new(0, 4)
         ContentList.Parent     = TabContent
         local ContentPad = Instance.new("UIPadding", TabContent)
-        ContentPad.PaddingTop    = UDim.new(0, 10)
-        ContentPad.PaddingLeft   = UDim.new(0, 12)
-        ContentPad.PaddingRight  = UDim.new(0, 12)
-        ContentPad.PaddingBottom = UDim.new(0, 10)
+        ContentPad.PaddingTop    = UDim.new(0, 7)
+        ContentPad.PaddingLeft   = UDim.new(0, 8)
+        ContentPad.PaddingRight  = UDim.new(0, 8)
+        ContentPad.PaddingBottom = UDim.new(0, 7)
 
         local TabObj  = {
             Name        = tabName,
@@ -861,19 +858,19 @@ function NeonLib:CreateWindow(config)
         -- ──────────────────────────────
         function TabObj:AddSection(sectionName)
             local SFrame = Instance.new("Frame")
-            SFrame.Size            = UDim2.new(1, 0, 0, 28)
+            SFrame.Size            = UDim2.new(1, 0, 0, 19)
             SFrame.BackgroundTransparency = 1
             SFrame.LayoutOrder     = self._elCount
             self._elCount          = self._elCount + 1
             SFrame.Parent          = TabContent
 
             local SLabel = Instance.new("TextLabel")
-            SLabel.Size            = UDim2.new(1, -8, 1, 0)
-            SLabel.Position        = UDim2.new(0, 4, 0, 0)
+            SLabel.Size            = UDim2.new(1, -5, 1, 0)
+            SLabel.Position        = UDim2.new(0, 3, 0, 0)
             SLabel.BackgroundTransparency = 1
             SLabel.Text            = sectionName:upper()
             SLabel.TextColor3      = currentTheme.Accent
-            SLabel.TextSize        = 11
+            SLabel.TextSize = 8
             SLabel.Font            = Enum.Font.GothamBold
             SLabel.TextXAlignment  = Enum.TextXAlignment.Left
             SLabel.Parent          = SFrame
@@ -881,8 +878,8 @@ function NeonLib:CreateWindow(config)
             onTheme(function(t) SLabel.TextColor3 = t.Accent end)
 
             local SLine = Instance.new("Frame")
-            SLine.Size             = UDim2.new(1, -8, 0, 1)
-            SLine.Position         = UDim2.new(0, 4, 1, -1)
+            SLine.Size             = UDim2.new(1, -5, 0, 1)
+            SLine.Position         = UDim2.new(0, 3, 1, -1)
             SLine.BackgroundColor3 = currentTheme.Accent
             SLine.BackgroundTransparency = 0.7
             SLine.Parent           = SFrame
@@ -901,7 +898,7 @@ function NeonLib:CreateWindow(config)
             F.BackgroundColor3     = currentTheme.Element
             F.LayoutOrder          = order
             F.Parent               = TabContent
-            Instance.new("UICorner", F).CornerRadius = UDim.new(0, 10)
+            Instance.new("UICorner", F).CornerRadius = UDim.new(0, 7)
 
             onTheme(function(t) F.BackgroundColor3 = t.Element end)
             return F
@@ -920,27 +917,27 @@ function NeonLib:CreateWindow(config)
 
             local Lbl = Instance.new("TextLabel")
             Lbl.Size               = UDim2.new(0.6, 0, 1, 0)
-            Lbl.Position           = UDim2.new(0, 14, 0, 0)
+            Lbl.Position           = UDim2.new(0, 9, 0, 0)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 14
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
             onTheme(function(t) Lbl.TextColor3 = t.Text end)
 
             local Btn = Instance.new("TextButton")
-            Btn.Size               = UDim2.new(0, 90, 0, 28)
+            Btn.Size               = UDim2.new(0, 60, 0, 19)
             Btn.AnchorPoint        = Vector2.new(1, 0.5)
-            Btn.Position           = UDim2.new(1, -12, 0.5, 0)
+            Btn.Position           = UDim2.new(1, -8, 0.5, 0)
             Btn.BackgroundColor3   = currentTheme.Accent
             Btn.Text               = cfg.ButtonText or "Execute"
             Btn.TextColor3         = Color3.fromRGB(255,255,255)
-            Btn.TextSize           = 13
+            Btn.TextSize = 9
             Btn.Font               = Enum.Font.GothamBold
             Btn.Parent             = F
-            Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 8)
+            Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 5)
             onTheme(function(t) Btn.BackgroundColor3 = t.Accent end)
 
             Btn.MouseButton1Click:Connect(function()
@@ -966,11 +963,11 @@ function NeonLib:CreateWindow(config)
 
             local Lbl = Instance.new("TextLabel")
             Lbl.Size               = UDim2.new(0.7, 0, 1, 0)
-            Lbl.Position           = UDim2.new(0, 14, 0, 0)
+            Lbl.Position           = UDim2.new(0, 9, 0, 0)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 14
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
@@ -978,9 +975,9 @@ function NeonLib:CreateWindow(config)
 
             -- Toggle track
             local Track = Instance.new("Frame")
-            Track.Size             = UDim2.new(0, 46, 0, 24)
+            Track.Size             = UDim2.new(0, 31, 0, 16)
             Track.AnchorPoint      = Vector2.new(1, 0.5)
-            Track.Position         = UDim2.new(1, -14, 0.5, 0)
+            Track.Position         = UDim2.new(1, -9, 0.5, 0)
             Track.BackgroundColor3 = state and currentTheme.Accent or Color3.fromRGB(60,60,80)
             Track.Parent           = F
             Instance.new("UICorner", Track).CornerRadius = UDim.new(1, 0)
@@ -988,9 +985,9 @@ function NeonLib:CreateWindow(config)
 
             -- Knob
             local Knob = Instance.new("Frame")
-            Knob.Size              = UDim2.new(0, 18, 0, 18)
+            Knob.Size              = UDim2.new(0, 12, 0, 12)
             Knob.AnchorPoint       = Vector2.new(0, 0.5)
-            Knob.Position          = state and UDim2.new(1,-21,0.5,0) or UDim2.new(0,3,0.5,0)
+            Knob.Position          = state and UDim2.new(1, -14, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
             Knob.BackgroundColor3  = Color3.fromRGB(255,255,255)
             Knob.Parent            = Track
             Instance.new("UICorner", Knob).CornerRadius = UDim.new(1, 0)
@@ -1009,7 +1006,7 @@ function NeonLib:CreateWindow(config)
                 ToggleObj.Value = val
                 if flag then WindowObj.Flags = WindowObj.Flags or {}; WindowObj.Flags[flag] = val end
                 Tween(Track, {BackgroundColor3 = val and currentTheme.Accent or Color3.fromRGB(60,60,80)}, 0.25):Play()
-                Tween(Knob, {Position = val and UDim2.new(1,-21,0.5,0) or UDim2.new(0,3,0.5,0)}, 0.25):Play()
+                Tween(Knob, {Position = val and UDim2.new(1, -14, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)}, 0.25):Play()
                 if not silent then pcall(callback, val) end
             end
 
@@ -1037,34 +1034,34 @@ function NeonLib:CreateWindow(config)
             table.insert(allElements, {name=name, tabName=tabName, frame=F})
 
             local Lbl = Instance.new("TextLabel")
-            Lbl.Size               = UDim2.new(0.6, 0, 0, 22)
-            Lbl.Position           = UDim2.new(0, 14, 0, 6)
+            Lbl.Size               = UDim2.new(0.6, 0, 0, 15)
+            Lbl.Position           = UDim2.new(0, 9, 0, 4)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 13
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
             onTheme(function(t) Lbl.TextColor3 = t.Text end)
 
             local ValLbl = Instance.new("TextLabel")
-            ValLbl.Size            = UDim2.new(0, 50, 0, 22)
+            ValLbl.Size            = UDim2.new(0, 33, 0, 15)
             ValLbl.AnchorPoint     = Vector2.new(1, 0)
-            ValLbl.Position        = UDim2.new(1, -14, 0, 6)
+            ValLbl.Position        = UDim2.new(1, -9, 0, 4)
             ValLbl.BackgroundTransparency = 1
             ValLbl.Text            = tostring(value)
             ValLbl.TextColor3      = currentTheme.Accent
-            ValLbl.TextSize        = 13
+            ValLbl.TextSize = 9
             ValLbl.Font            = Enum.Font.GothamBold
             ValLbl.TextXAlignment  = Enum.TextXAlignment.Right
             ValLbl.Parent          = F
             onTheme(function(t) ValLbl.TextColor3 = t.Accent end)
 
             local Track = Instance.new("Frame")
-            Track.Size             = UDim2.new(1, -28, 0, 6)
+            Track.Size             = UDim2.new(1, -19, 0, 4)
             Track.AnchorPoint      = Vector2.new(0.5, 1)
-            Track.Position         = UDim2.new(0.5, 0, 1, -10)
+            Track.Position         = UDim2.new(0.5, 0, 1, -7)
             Track.BackgroundColor3 = Color3.fromRGB(40, 30, 60)
             Track.Parent           = F
             Instance.new("UICorner", Track).CornerRadius = UDim.new(1, 0)
@@ -1077,7 +1074,7 @@ function NeonLib:CreateWindow(config)
             onTheme(function(t) Fill.BackgroundColor3 = t.Accent end)
 
             local Knob = Instance.new("Frame")
-            Knob.Size              = UDim2.new(0, 14, 0, 14)
+            Knob.Size              = UDim2.new(0, 9, 0, 9)
             Knob.AnchorPoint       = Vector2.new(0.5, 0.5)
             Knob.Position          = UDim2.new((value-min)/(max-min), 0, 0.5, 0)
             Knob.BackgroundColor3  = Color3.fromRGB(255,255,255)
@@ -1087,7 +1084,7 @@ function NeonLib:CreateWindow(config)
 
             local draggingSlider = false
             local SliderBtn = Instance.new("TextButton")
-            SliderBtn.Size         = UDim2.new(1, 0, 1, 8)
+            SliderBtn.Size         = UDim2.new(1, 0, 1, 5)
             SliderBtn.AnchorPoint  = Vector2.new(0, 0.5)
             SliderBtn.Position     = UDim2.new(0, 0, 0.5, 0)
             SliderBtn.BackgroundTransparency = 1
@@ -1153,32 +1150,32 @@ function NeonLib:CreateWindow(config)
             table.insert(allElements, {name=name, tabName=tabName, frame=F})
 
             local Lbl = Instance.new("TextLabel")
-            Lbl.Size               = UDim2.new(1, -28, 0, 20)
-            Lbl.Position           = UDim2.new(0, 14, 0, 5)
+            Lbl.Size               = UDim2.new(1, -19, 0, 13)
+            Lbl.Position           = UDim2.new(0, 9, 0, 3)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 13
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
             onTheme(function(t) Lbl.TextColor3 = t.Text end)
 
             local Input = Instance.new("TextBox")
-            Input.Size             = UDim2.new(1, -28, 0, 26)
-            Input.Position         = UDim2.new(0, 14, 0, 26)
+            Input.Size             = UDim2.new(1, -19, 0, 17)
+            Input.Position         = UDim2.new(0, 9, 0, 17)
             Input.BackgroundColor3 = currentTheme.Bg
             Input.Text             = default
             Input.PlaceholderText  = placeholder
             Input.PlaceholderColor3 = Color3.fromRGB(100, 90, 130)
             Input.TextColor3       = currentTheme.Text
-            Input.TextSize         = 13
+            Input.TextSize = 9
             Input.Font             = Enum.Font.Gotham
             Input.ClearTextOnFocus = false
             Input.Parent           = F
-            Instance.new("UICorner", Input).CornerRadius = UDim.new(0, 6)
+            Instance.new("UICorner", Input).CornerRadius = UDim.new(0, 4)
             local ipad = Instance.new("UIPadding", Input)
-            ipad.PaddingLeft = UDim.new(0, 8)
+            ipad.PaddingLeft = UDim.new(0, 5)
             onTheme(function(t) Input.BackgroundColor3 = t.Bg; Input.TextColor3 = t.Text end)
 
             local TextBoxObj = { Value = default }
@@ -1212,27 +1209,27 @@ function NeonLib:CreateWindow(config)
 
             local Lbl = Instance.new("TextLabel")
             Lbl.Size               = UDim2.new(0.45, 0, 1, 0)
-            Lbl.Position           = UDim2.new(0, 14, 0, 0)
+            Lbl.Position           = UDim2.new(0, 9, 0, 0)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 14
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
             onTheme(function(t) Lbl.TextColor3 = t.Text end)
 
             local SelBtn = Instance.new("TextButton")
-            SelBtn.Size            = UDim2.new(0, 140, 0, 28)
+            SelBtn.Size            = UDim2.new(0, 93, 0, 19)
             SelBtn.AnchorPoint     = Vector2.new(1, 0.5)
-            SelBtn.Position        = UDim2.new(1, -12, 0.5, 0)
+            SelBtn.Position        = UDim2.new(1, -8, 0.5, 0)
             SelBtn.BackgroundColor3 = currentTheme.Bg
             SelBtn.Text            = selected .. "  ▾"
             SelBtn.TextColor3      = currentTheme.Text
-            SelBtn.TextSize        = 13
+            SelBtn.TextSize = 9
             SelBtn.Font            = Enum.Font.Gotham
             SelBtn.Parent          = F
-            Instance.new("UICorner", SelBtn).CornerRadius = UDim.new(0, 8)
+            Instance.new("UICorner", SelBtn).CornerRadius = UDim.new(0, 5)
             Instance.new("UIStroke", SelBtn).Color = currentTheme.Accent
             onTheme(function(t)
                 SelBtn.BackgroundColor3 = t.Bg
@@ -1249,7 +1246,7 @@ function NeonLib:CreateWindow(config)
 
             local Panel = Instance.new("Frame")
             Panel.Name             = "DropPanel"
-            Panel.Size             = UDim2.new(0, 140, 0, panelH)
+            Panel.Size             = UDim2.new(0, 93, 0, panelH)
             Panel.AnchorPoint      = Vector2.new(0, 0)
             Panel.Position         = UDim2.new(0, 0, 0, 0)   -- será atualizado ao abrir
             Panel.BackgroundColor3 = currentTheme.Tab
@@ -1257,7 +1254,7 @@ function NeonLib:CreateWindow(config)
             Panel.Visible          = false
             Panel.ClipsDescendants = true
             Panel.Parent           = OverlayLayer  -- <-- OverlayLayer garante ficar na frente
-            Instance.new("UICorner", Panel).CornerRadius = UDim.new(0, 10)
+            Instance.new("UICorner", Panel).CornerRadius = UDim.new(0, 7)
             local PanStroke = Instance.new("UIStroke", Panel)
             PanStroke.Color = currentTheme.Accent
             onTheme(function(t)
@@ -1268,7 +1265,7 @@ function NeonLib:CreateWindow(config)
             local PanelScroll = Instance.new("ScrollingFrame")
             PanelScroll.Size       = UDim2.new(1, 0, 1, 0)
             PanelScroll.BackgroundTransparency = 1
-            PanelScroll.ScrollBarThickness = 2
+            PanelScroll.ScrollBarThickness = 0.7
             PanelScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
             PanelScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
             PanelScroll.ZIndex     = 3
@@ -1276,20 +1273,20 @@ function NeonLib:CreateWindow(config)
 
             local PanList = Instance.new("UIListLayout")
             PanList.SortOrder      = Enum.SortOrder.LayoutOrder
-            PanList.Padding        = UDim.new(0, 2)
+            PanList.Padding        = UDim.new(0, 1)
             PanList.Parent         = PanelScroll
             local PanPad = Instance.new("UIPadding", PanelScroll)
-            PanPad.PaddingTop    = UDim.new(0, 4)
-            PanPad.PaddingLeft   = UDim.new(0, 4)
-            PanPad.PaddingRight  = UDim.new(0, 4)
-            PanPad.PaddingBottom = UDim.new(0, 4)
+            PanPad.PaddingTop    = UDim.new(0, 3)
+            PanPad.PaddingLeft   = UDim.new(0, 3)
+            PanPad.PaddingRight  = UDim.new(0, 3)
+            PanPad.PaddingBottom = UDim.new(0, 3)
 
             local DropObj = { Value = selected }
 
             -- Fecha este dropdown (usado também ao abrir outro)
             local function closePanel()
                 open = false
-                Tween(Panel, {Size = UDim2.new(0, 140, 0, 0)}, 0.18):Play()
+                Tween(Panel, {Size = UDim2.new(0, 93, 0, 0)}, 0.18):Play()
                 task.delay(0.19, function() Panel.Visible = false end)
             end
 
@@ -1309,17 +1306,17 @@ function NeonLib:CreateWindow(config)
                 end
                 for i, opt in ipairs(opts) do
                     local OBtn = Instance.new("TextButton")
-                    OBtn.Size            = UDim2.new(1, 0, 0, 28)
+                    OBtn.Size            = UDim2.new(1, 0, 0, 19)
                     OBtn.BackgroundColor3 = currentTheme.Element
                     OBtn.BackgroundTransparency = opt == selected and 0 or 0.5
                     OBtn.Text            = opt
                     OBtn.TextColor3      = currentTheme.Text
-                    OBtn.TextSize        = 13
+                    OBtn.TextSize = 9
                     OBtn.Font            = Enum.Font.Gotham
                     OBtn.LayoutOrder     = i
                     OBtn.ZIndex          = 4
                     OBtn.Parent          = PanelScroll
-                    Instance.new("UICorner", OBtn).CornerRadius = UDim.new(0, 6)
+                    Instance.new("UICorner", OBtn).CornerRadius = UDim.new(0, 4)
                     onTheme(function(t)
                         OBtn.BackgroundColor3 = t.Element
                         OBtn.TextColor3       = t.Text
@@ -1355,24 +1352,38 @@ function NeonLib:CreateWindow(config)
                 open = true
 
                 -- Calcula posição absoluta do SelBtn no ScreenGui
-                local abs  = SelBtn.AbsolutePosition
-                local size = SelBtn.AbsoluteSize
-                local newH = math.min(#options, 5) * 30 + 8
+                local abs     = SelBtn.AbsolutePosition
+                local size    = SelBtn.AbsoluteSize
+                local PANW    = 93   -- largura do painel (140 / 1.5)
+                local ITEMH   = 20   -- altura de cada item (30 / 1.5)
+                local newH    = math.min(#options, 5) * ITEMH + 6
 
                 -- Posiciona abaixo do botão, alinhado à direita
-                local panX = abs.X + size.X - 140
-                local panY = abs.Y + size.Y + 4
+                local panX = abs.X + size.X - PANW
+                local panY = abs.Y + size.Y + 3
 
                 -- Se ultrapassar a tela embaixo, abre para cima
                 local screenH = ScreenGui.AbsoluteSize.Y
                 if panY + newH > screenH then
-                    panY = abs.Y - newH - 4
+                    panY = abs.Y - newH - 3
                 end
 
-                Panel.Size     = UDim2.new(0, 140, 0, 0)
+                Panel.Size     = UDim2.new(0, PANW, 0, 0)
                 Panel.Position = UDim2.new(0, panX, 0, panY)
                 Panel.Visible  = true
-                Tween(Panel, {Size = UDim2.new(0, 140, 0, newH)}, 0.22, Enum.EasingStyle.Back):Play()
+                Tween(Panel, {Size = UDim2.new(0, PANW, 0, newH)}, 0.22, Enum.EasingStyle.Back):Play()
+
+                -- Auto-scroll ate a opcao selecionada
+                task.defer(function()
+                    local selIdx = 1
+                    for i, opt in ipairs(options) do
+                        if opt == selected then selIdx = i; break end
+                    end
+                    local itemY     = (selIdx - 1) * ITEMH
+                    local centerOff = (newH / 2) - (ITEMH / 2)
+                    local targetY   = math.max(0, itemY - centerOff)
+                    Tween(PanelScroll, {CanvasPosition = Vector2.new(0, targetY)}, 0.25):Play()
+                end)
             end)
 
             function DropObj:Set(v, silent) selectOption(v, silent) end
@@ -1399,37 +1410,37 @@ function NeonLib:CreateWindow(config)
 
             local Lbl = Instance.new("TextLabel")
             Lbl.Size               = UDim2.new(0.6, 0, 1, 0)
-            Lbl.Position           = UDim2.new(0, 14, 0, 0)
+            Lbl.Position           = UDim2.new(0, 9, 0, 0)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 14
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
             onTheme(function(t) Lbl.TextColor3 = t.Text end)
 
             local Preview = Instance.new("TextButton")
-            Preview.Size           = UDim2.new(0, 48, 0, 28)
+            Preview.Size           = UDim2.new(0, 32, 0, 19)
             Preview.AnchorPoint    = Vector2.new(1, 0.5)
-            Preview.Position       = UDim2.new(1, -14, 0.5, 0)
+            Preview.Position       = UDim2.new(1, -9, 0.5, 0)
             Preview.BackgroundColor3 = default
             Preview.Text           = ""
             Preview.Parent         = F
-            Instance.new("UICorner", Preview).CornerRadius = UDim.new(0, 8)
+            Instance.new("UICorner", Preview).CornerRadius = UDim.new(0, 5)
 
             local ColorObj = { Value = default }
 
             -- Simple HSV popup
             local Popup = Instance.new("Frame")
-            Popup.Size             = UDim2.new(0, 200, 0, 180)
+            Popup.Size             = UDim2.new(0, 133, 0, 120)
             Popup.AnchorPoint      = Vector2.new(1, 0)
-            Popup.Position         = UDim2.new(1, -14, 1, 4)
+            Popup.Position         = UDim2.new(1, -9, 1, 3)
             Popup.BackgroundColor3 = currentTheme.Tab
             Popup.ZIndex           = 20
             Popup.Visible          = false
             Popup.Parent           = F
-            Instance.new("UICorner", Popup).CornerRadius = UDim.new(0, 12)
+            Instance.new("UICorner", Popup).CornerRadius = UDim.new(0, 8)
             Instance.new("UIStroke", Popup).Color = currentTheme.Accent
             onTheme(function(t) Popup.BackgroundColor3 = t.Tab; Popup:FindFirstChildOfClass("UIStroke").Color = t.Accent end)
 
@@ -1438,20 +1449,20 @@ function NeonLib:CreateWindow(config)
 
             local function makeHSVSlider(label, yPos, initVal, onChange)
                 local SLbl = Instance.new("TextLabel")
-                SLbl.Size              = UDim2.new(1, -20, 0, 16)
-                SLbl.Position          = UDim2.new(0, 10, 0, yPos)
+                SLbl.Size              = UDim2.new(1, -13, 0, 11)
+                SLbl.Position          = UDim2.new(0, 7, 0, yPos)
                 SLbl.BackgroundTransparency = 1
                 SLbl.Text              = label
                 SLbl.TextColor3        = currentTheme.Text
-                SLbl.TextSize          = 11
+                SLbl.TextSize = 8
                 SLbl.Font              = Enum.Font.Gotham
                 SLbl.ZIndex            = 21
                 SLbl.Parent            = Popup
                 onTheme(function(t) SLbl.TextColor3 = t.Text end)
 
                 local STrk = Instance.new("Frame")
-                STrk.Size              = UDim2.new(1, -20, 0, 8)
-                STrk.Position          = UDim2.new(0, 10, 0, yPos + 18)
+                STrk.Size              = UDim2.new(1, -13, 0, 5)
+                STrk.Position          = UDim2.new(0, 7, 0, yPos + 18)
                 STrk.BackgroundColor3  = Color3.fromRGB(40,30,60)
                 STrk.ZIndex            = 21
                 STrk.Parent            = Popup
@@ -1466,7 +1477,7 @@ function NeonLib:CreateWindow(config)
                 onTheme(function(t) SFill.BackgroundColor3 = t.Accent end)
 
                 local SBtn = Instance.new("TextButton")
-                SBtn.Size              = UDim2.new(1, 0, 1, 12)
+                SBtn.Size              = UDim2.new(1, 0, 1, 8)
                 SBtn.AnchorPoint       = Vector2.new(0, 0.5)
                 SBtn.Position          = UDim2.new(0, 0, 0.5, 0)
                 SBtn.BackgroundTransparency = 1
@@ -1541,27 +1552,27 @@ function NeonLib:CreateWindow(config)
 
             local Lbl = Instance.new("TextLabel")
             Lbl.Size               = UDim2.new(0.6, 0, 1, 0)
-            Lbl.Position           = UDim2.new(0, 14, 0, 0)
+            Lbl.Position           = UDim2.new(0, 9, 0, 0)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = name
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 14
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.Parent             = F
             onTheme(function(t) Lbl.TextColor3 = t.Text end)
 
             local KBtn = Instance.new("TextButton")
-            KBtn.Size              = UDim2.new(0, 90, 0, 28)
+            KBtn.Size              = UDim2.new(0, 60, 0, 19)
             KBtn.AnchorPoint       = Vector2.new(1, 0.5)
-            KBtn.Position          = UDim2.new(1, -12, 0.5, 0)
+            KBtn.Position          = UDim2.new(1, -8, 0.5, 0)
             KBtn.BackgroundColor3  = currentTheme.Bg
             KBtn.Text              = tostring(bound.Name)
             KBtn.TextColor3        = currentTheme.Accent
-            KBtn.TextSize          = 13
+            KBtn.TextSize = 9
             KBtn.Font              = Enum.Font.GothamBold
             KBtn.Parent            = F
-            Instance.new("UICorner", KBtn).CornerRadius = UDim.new(0, 8)
+            Instance.new("UICorner", KBtn).CornerRadius = UDim.new(0, 5)
             Instance.new("UIStroke", KBtn).Color = currentTheme.Accent
             onTheme(function(t)
                 KBtn.BackgroundColor3 = t.Bg
@@ -1605,12 +1616,12 @@ function NeonLib:CreateWindow(config)
             F.BackgroundTransparency = 0.6
 
             local Lbl = Instance.new("TextLabel")
-            Lbl.Size               = UDim2.new(1, -28, 1, 0)
-            Lbl.Position           = UDim2.new(0, 14, 0, 0)
+            Lbl.Size               = UDim2.new(1, -19, 1, 0)
+            Lbl.Position           = UDim2.new(0, 9, 0, 0)
             Lbl.BackgroundTransparency = 1
             Lbl.Text               = text
             Lbl.TextColor3         = currentTheme.Text
-            Lbl.TextSize           = 13
+            Lbl.TextSize = 9
             Lbl.Font               = Enum.Font.Gotham
             Lbl.TextXAlignment     = Enum.TextXAlignment.Left
             Lbl.TextWrapped        = true
@@ -1636,12 +1647,12 @@ function NeonLib:CreateWindow(config)
 
             if title ~= "" then
                 local TLbl = Instance.new("TextLabel")
-                TLbl.Size              = UDim2.new(1,-28,0,20)
-                TLbl.Position          = UDim2.new(0,14,0,6)
+                TLbl.Size              = UDim2.new(1, -19, 0, 13)
+                TLbl.Position          = UDim2.new(0, 9, 0, 4)
                 TLbl.BackgroundTransparency = 1
                 TLbl.Text              = title
                 TLbl.TextColor3        = currentTheme.Accent
-                TLbl.TextSize          = 13
+                TLbl.TextSize = 9
                 TLbl.Font              = Enum.Font.GothamBold
                 TLbl.TextXAlignment    = Enum.TextXAlignment.Left
                 TLbl.Parent            = F
@@ -1649,12 +1660,12 @@ function NeonLib:CreateWindow(config)
             end
 
             local BLbl = Instance.new("TextLabel")
-            BLbl.Size              = UDim2.new(1,-28,0,40)
-            BLbl.Position          = UDim2.new(0,14,0, title~="" and 28 or 8)
+            BLbl.Size              = UDim2.new(1, -19, 0, 27)
+            BLbl.Position          = UDim2.new(0, 9, 0, title~="" and 28 or 8)
             BLbl.BackgroundTransparency = 1
             BLbl.Text              = text
             BLbl.TextColor3        = currentTheme.Text
-            BLbl.TextSize          = 12
+            BLbl.TextSize = 8
             BLbl.Font              = Enum.Font.Gotham
             BLbl.TextXAlignment    = Enum.TextXAlignment.Left
             BLbl.TextWrapped       = true
