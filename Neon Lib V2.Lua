@@ -1014,6 +1014,11 @@ function NeonLib:CreateWindow(config)
 
             function ToggleObj:Set(v, silent) setToggle(v, silent) end
 
+            if flag then
+                WindowObj._flagRegistry = WindowObj._flagRegistry or {}
+                WindowObj._flagRegistry[flag] = { obj = ToggleObj, kind = "toggle" }
+            end
+
             return ToggleObj
         end
 
@@ -1132,6 +1137,11 @@ function NeonLib:CreateWindow(config)
 
             function SliderObj:Set(v, silent) setSlider(v, silent) end
 
+            if flag then
+                WindowObj._flagRegistry = WindowObj._flagRegistry or {}
+                WindowObj._flagRegistry[flag] = { obj = SliderObj, kind = "slider" }
+            end
+
             return SliderObj
         end
 
@@ -1186,6 +1196,10 @@ function NeonLib:CreateWindow(config)
             end)
             function TextBoxObj:Set(v)
                 Input.Text = v; self.Value = v
+            end
+            if flag then
+                WindowObj._flagRegistry = WindowObj._flagRegistry or {}
+                WindowObj._flagRegistry[flag] = { obj = TextBoxObj, kind = "textbox" }
             end
             return TextBoxObj
         end
@@ -1388,6 +1402,11 @@ function NeonLib:CreateWindow(config)
             function DropObj:Refresh(newOpts)
                 options = newOpts
                 buildOptions(newOpts)
+            end
+
+            if flag then
+                WindowObj._flagRegistry = WindowObj._flagRegistry or {}
+                WindowObj._flagRegistry[flag] = { obj = DropObj, kind = "dropdown" }
             end
 
             return DropObj
@@ -1644,6 +1663,11 @@ function NeonLib:CreateWindow(config)
                 if not silent then pcall(callback, v) end
             end
 
+            if flag then
+                WindowObj._flagRegistry = WindowObj._flagRegistry or {}
+                WindowObj._flagRegistry[flag] = { obj = ColorObj, kind = "color" }
+            end
+
             return ColorObj
         end
 
@@ -1714,6 +1738,10 @@ function NeonLib:CreateWindow(config)
             end)
 
             function BindObj:Set(v) bound = v; KBtn.Text = tostring(v.Name); self.Value = v end
+            if flag then
+                WindowObj._flagRegistry = WindowObj._flagRegistry or {}
+                WindowObj._flagRegistry[flag] = { obj = BindObj, kind = "keybind" }
+            end
             return BindObj
         end
 
@@ -1890,24 +1918,43 @@ function NeonLib:CreateWindow(config)
             ButtonText = "Load",
             Callback   = function()
                 local sel = saveDrop.Value
-                if sel == "(no saves)" then return end
+                if sel == "(no saves)" or sel == "" then return end
+
                 local raw = ReadFile("NeonLib/Saves/" .. sel .. ".json")
-                if not raw then return end
+                if not raw or raw == "" then return end
 
-                local ok, data = pcall(function() return HttpService:JSONDecode(raw) end)
-                if not ok or type(data) ~= "table" then return end
+                local ok, decoded = pcall(function() return HttpService:JSONDecode(raw) end)
+                if not ok or type(decoded) ~= "table" then return end
 
-                -- Apply flags
-                if WindowObj.Flags then
-                    for k, v in pairs(data) do
-                        if type(v) == "table" then
-                            if v.__type == "Color3" then
-                                WindowObj.Flags[k] = Color3.new(v.r, v.g, v.b)
-                            elseif v.__type == "Enum" then
-                                -- Enums stored as string info only for keybinds
-                            end
-                        else
-                            WindowObj.Flags[k] = v
+                local registry = WindowObj._flagRegistry or {}
+
+                for k, v in pairs(decoded) do
+                    -- Deserializa tipos especiais
+                    local realVal
+                    if type(v) == "table" then
+                        if v.__type == "Color3" then
+                            realVal = Color3.new(v.r or 0, v.g or 0, v.b or 0)
+                        elseif v.__type == "Enum" then
+                            -- Keybind: tenta resolver via Enum.KeyCode
+                            pcall(function()
+                                local parts = tostring(v.val):split(".")
+                                if parts and #parts >= 3 then
+                                    realVal = Enum[parts[2]][parts[3]]
+                                end
+                            end)
+                        end
+                    else
+                        realVal = v
+                    end
+
+                    if realVal ~= nil then
+                        -- Atualiza o valor na tabela Flags
+                        WindowObj.Flags[k] = realVal
+
+                        -- Chama :Set() no elemento registrado para atualizar a UI
+                        local entry = registry[k]
+                        if entry and entry.obj and entry.obj.Set then
+                            pcall(function() entry.obj:Set(realVal, true) end)
                         end
                     end
                 end
@@ -1920,7 +1967,8 @@ function NeonLib:CreateWindow(config)
         return configTab
     end
 
-    WindowObj.Flags = {}
+    WindowObj.Flags         = {}
+    WindowObj._flagRegistry = {}  -- flag -> { obj, type }
 
     -- Theme apply on init
     applyTheme()
