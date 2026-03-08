@@ -1,141 +1,252 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Elison999/neo-lib-v2/refs/heads/main/Neon%20Lib%20V2.Lua"))()
+-- ══════════════════════════════════════════════════════════
+--   NEON LIB V2 — Exemplo de Uso Completo
+--   loadstring(game:HttpGet("https://raw.githubusercontent.com/Elison999/neo-lib-v2/refs/heads/main/Neon%20Lib%20V2.Lua"))()
+-- ══════════════════════════════════════════════════════════
 
-    local Window = Library.new({
-        -- Key System
-        KeySystem       = true,
-        KeyName         = "LOH HUB | Key System",
-        Key             = "LOH_HUB.GG",
-        AutoSaveKey     = true,
-        AutoLoadKey     = true,
-        GetKeybyWebsite = true,
-        WebSite         = "https://pastebin.com/SeuLink",
-        -- Loading
-        DecalId         = "7148140395",
-        LoadingName     = "Welcome Back!!",
-        -- UI
-        Title           = "LOH HUB",
-        SubTitle        = "LOH_HUB.GG",
-        Theme           = "Neon Void",
-    })
+local NeonLib = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/Elison999/neo-lib-v2/refs/heads/main/Neon%20Lib%20V2.Lua"
+))()
 
-    -- Adiciona tabs
-    local MainTab = Window:AddTab("Main", "🏠")
-    local AimbotTab = Window:AddTab("Aimbot", "🎯")
-    local VisualTab = Window:AddTab("Visuals", "👁")
-    local MiscTab = Window:AddTab("Misc", "⚙")
-    local ConfigTab = Window:AddConfig()
+-- ─── Cria a janela principal ───────────────────────────
+local Window = NeonLib:CreateWindow({
+    Title          = "Neon Hub",
+    Size           = UDim2.new(0, 640, 0, 460),
+    Theme          = "Neon Purple",   -- tema padrão
 
-    -- Seção
-    MainTab:AddSection({ Name = "Player" })
+    -- Key System
+    KeySystem      = true,
+    KeyName        = "Key System",
+    Key            = "LOH_HUB.GG",
+    AutoSaveKey    = true,
+    AutoLoadKey    = true,
+    GetKeybyWebsite = true,
+    WebSite        = "https://pastebin.com/...",
 
-    -- Toggle
-    MainTab:AddToggle({
-        Name = "God Mode",
-        Default = false,
-        Callback = function(val)
-            print("GodMode:", val)
+    -- Loading screen
+    DecalId        = "123456789",
+    LoadingName    = "Welcome Back!!",
+})
+
+-- ─── Tab: Combat ───────────────────────────────────────
+local CombatTab = Window:AddTab("⚔ Combat")
+
+CombatTab:AddSection("Aimbot")
+
+CombatTab:AddToggle({
+    Name     = "Aimbot",
+    Value    = false,
+    Flag     = "AimbotEnabled",
+    Callback = function(val)
+        print("Aimbot:", val)
+    end
+})
+
+CombatTab:AddSlider({
+    Name     = "Aimbot Range",
+    Min      = 10,
+    Max      = 500,
+    Value    = 150,
+    Flag     = "AimbotRange",
+    Callback = function(val)
+        print("Range:", val)
+    end
+})
+
+CombatTab:AddDropdown({
+    Name     = "Aimbot Part",
+    Options  = { "Head", "HumanoidRootPart", "UpperTorso", "LowerTorso" },
+    Value    = "Head",
+    Flag     = "AimbotPart",
+    Callback = function(val)
+        print("Part:", val)
+    end
+})
+
+CombatTab:AddSection("Silent Aim")
+
+CombatTab:AddToggle({
+    Name     = "Silent Aim",
+    Value    = false,
+    Flag     = "SilentAim",
+    Callback = function(val)
+        print("Silent Aim:", val)
+    end
+})
+
+CombatTab:AddSlider({
+    Name     = "FOV Size",
+    Min      = 10,
+    Max      = 360,
+    Value    = 90,
+    Flag     = "FOVSize",
+    Callback = function(val)
+        print("FOV:", val)
+    end
+})
+
+CombatTab:AddKeybind({
+    Name     = "Aimbot Key",
+    Value    = Enum.KeyCode.E,
+    Flag     = "AimbotKey",
+    Callback = function(key)
+        print("Aimbot triggered:", key)
+    end
+})
+
+-- ─── Tab: Player ───────────────────────────────────────
+local PlayerTab = Window:AddTab("🧍 Player")
+
+PlayerTab:AddSection("Movement")
+
+PlayerTab:AddToggle({
+    Name     = "Speed Hack",
+    Value    = false,
+    Flag     = "SpeedEnabled",
+    Callback = function(val)
+        if val then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 50
+        else
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
         end
-    })
+    end
+})
 
-    -- Slider
-    MainTab:AddSlider({
-        Name = "WalkSpeed",
-        Min = 16, Max = 250, Default = 16,
-        Suffix = " sp",
-        Callback = function(val)
+PlayerTab:AddSlider({
+    Name     = "Walk Speed",
+    Min      = 16,
+    Max      = 500,
+    Value    = 16,
+    Flag     = "WalkSpeed",
+    Callback = function(val)
+        pcall(function()
             game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
-        end
-    })
+        end)
+    end
+})
 
-    -- Dropdown
-    MainTab:AddDropdown({
-        Name = "Team",
-        Options = {"Innocents", "Sheriffs", "Murderer"},
-        Default = "Innocents",
-        Callback = function(val)
-            print("Team:", val)
-        end
-    })
-
-    -- Color Picker
-    MainTab:AddColorPicker({
-        Name = "ESP Color",
-        Default = Color3.fromRGB(255, 50, 50),
-        Callback = function(col)
-            print("Color:", col)
-        end
-    })
-
-    -- Keybind
-    MainTab:AddKeybind({
-        Name = "Toggle Menu",
-        Default = Enum.KeyCode.RightShift,
-        OnPress = function()
-            Window:Toggle()
-        end,
-        Callback = function(key)
-            print("Key set:", key)
-        end
-    })
-
-    -- MultiToggle
-    MainTab:AddMultiToggle({
-        Name = "ESP Options",
-        Options = {"Names", "Health", "Distance", "Boxes"},
-        Default = {"Names"},
-        Callback = function(selected)
-            print("Selected:", table.concat(selected, ", "))
-        end
-    })
-
-    -- Button
-    MainTab:AddButton({
-        Name = "🚀  Executar Script",
-        Callback = function()
-            Window:Notify({
-                Title = "Executado!",
-                Description = "Script rodando com sucesso.",
-                Duration = 3,
-                Icon = "✅"
-            })
-        end
-    })
-
-    -- Textbox
-    MainTab:AddTextbox({
-        Name = "Player Alvo",
-        Placeholder = "Nome do player...",
-        Default = "",
-        Callback = function(text)
-            print("Alvo:", text)
-        end
-    })
-
-    -- Label
-    local lbl = MainTab:AddLabel({ Name = "Status: Inativo" })
-    task.delay(2, function()
-        lbl:Set("<font color='#22c55e'>Status: Ativo ✓</font>")
-    end)
-
-    -- Paragraph
-    MainTab:AddParagraph({
-        Content = "Bem-vindo ao LOH HUB! Use as abas para navegar pelas funcionalidades. Pressione RightShift para abrir/fechar a UI."
-    })
-
-    -- Input numérico
-    MainTab:AddInput({
-        Name = "Jump Power",
-        Default = 50,
-        Placeholder = "Digite o valor...",
-        Callback = function(val)
+PlayerTab:AddSlider({
+    Name     = "Jump Power",
+    Min      = 50,
+    Max      = 500,
+    Value    = 50,
+    Flag     = "JumpPower",
+    Callback = function(val)
+        pcall(function()
             game.Players.LocalPlayer.Character.Humanoid.JumpPower = val
-        end
-    })
+        end)
+    end
+})
 
-    -- Notificação inicial
-    Window:Notify({
-        Title = "LOH HUB Carregado!",
-        Description = "Bem-vindo, " .. game.Players.LocalPlayer.Name,
-        Duration = 5,
-        Icon = "🎉"
-    })
+PlayerTab:AddSection("Visual")
+
+PlayerTab:AddToggle({
+    Name     = "Noclip",
+    Value    = false,
+    Flag     = "Noclip",
+    Callback = function(val)
+        print("Noclip:", val)
+    end
+})
+
+PlayerTab:AddToggle({
+    Name     = "Infinite Jump",
+    Value    = false,
+    Flag     = "InfJump",
+    Callback = function(val)
+        print("InfJump:", val)
+    end
+})
+
+PlayerTab:AddColorPicker({
+    Name     = "Player Color",
+    Value    = Color3.fromRGB(138, 43, 226),
+    Flag     = "PlayerColor",
+    Callback = function(color)
+        print("Color:", color)
+    end
+})
+
+-- ─── Tab: ESP ──────────────────────────────────────────
+local EspTab = Window:AddTab("👁 ESP")
+
+EspTab:AddSection("Players")
+
+EspTab:AddToggle({
+    Name     = "Player ESP",
+    Value    = false,
+    Flag     = "PlayerESP",
+    Callback = function(val) print("ESP:", val) end
+})
+
+EspTab:AddToggle({
+    Name     = "Box ESP",
+    Value    = false,
+    Flag     = "BoxESP",
+    Callback = function(val) print("BoxESP:", val) end
+})
+
+EspTab:AddToggle({
+    Name     = "Name ESP",
+    Value    = false,
+    Flag     = "NameESP",
+    Callback = function(val) print("NameESP:", val) end
+})
+
+EspTab:AddToggle({
+    Name     = "Distance ESP",
+    Value    = false,
+    Flag     = "DistanceESP",
+    Callback = function(val) print("DistESP:", val) end
+})
+
+EspTab:AddSlider({
+    Name     = "ESP Distance",
+    Min      = 50,
+    Max      = 2000,
+    Value    = 500,
+    Flag     = "ESPDistance",
+    Callback = function(val) print("ESPDist:", val) end
+})
+
+-- ─── Tab: Misc ─────────────────────────────────────────
+local MiscTab = Window:AddTab("🔧 Misc")
+
+MiscTab:AddSection("Utility")
+
+MiscTab:AddButton({
+    Name       = "Rejoin Server",
+    ButtonText = "Rejoin",
+    Callback   = function()
+        local id = game.PlaceId
+        game:GetService("TeleportService"):Teleport(id, game.Players.LocalPlayer)
+    end
+})
+
+MiscTab:AddButton({
+    Name       = "Copy Game ID",
+    ButtonText = "Copy",
+    Callback   = function()
+        if setclipboard then
+            setclipboard(tostring(game.PlaceId))
+        end
+    end
+})
+
+MiscTab:AddTextBox({
+    Name        = "Custom Note",
+    Placeholder = "Write a note...",
+    Flag        = "Note",
+    Callback    = function(val)
+        print("Note saved:", val)
+    end
+})
+
+MiscTab:AddLabel({ Text = "Hub Version: 1.0.0" })
+
+MiscTab:AddParagraph({
+    Title = "About",
+    Value = "NeonLib V2 — Ultra Modern Roblox UI Library. Designed for performance and style."
+})
+
+-- ─── Config Tab (automático) ───────────────────────────
+Window:AddConfig()
